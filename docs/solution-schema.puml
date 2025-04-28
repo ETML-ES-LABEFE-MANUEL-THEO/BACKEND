@@ -1,0 +1,20 @@
+@startuml
+
+actor User
+cloud Web
+interface AmazonS3
+
+folder Infra {
+    node Frontend
+    node Backend
+    database Database
+}
+
+User .. Web
+Web .. Frontend
+Web .. AmazonS3
+Frontend -- Backend
+Backend -- Database
+Backend .. AmazonS3
+
+@enduml

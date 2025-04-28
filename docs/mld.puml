@@ -1,0 +1,29 @@
+@startuml
+
+entity Category {
+    * ** id : Integer [PK] **
+    * name : String
+    parent_id : Integer [FK]
+}
+Category |o-- Category : belongs to
+
+entity Lot {
+    * ** id : Integer [PK] **
+    * name : String
+    * description : String
+    * initial_price : Decimal
+    * location : String
+    * date : DateTime
+    * category_id : Integer [FK]
+}
+Lot ||-- Category : classified by
+
+entity Auction {
+    * ** id : Integer [PK] **
+    * price : Decimal
+    * date : DateTime
+    * lot_id : Integer [FK]
+}
+Lot }o-- Auction : priced by
+
+@enduml

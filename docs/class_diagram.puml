@@ -1,0 +1,52 @@
+@startuml
+
+package ch.zucchinit.zauction {
+    class SpringApplication
+    class ZAuctionApplication {
+        +main(String[]): void
+    }
+    "ZAuctionApplication" --> "SpringApplication"
+
+    package Category {
+        interface CategoryRepository<extends JARepository<Category, Long>>
+        class CategoryController {
+            -categoryService: CategoryService
+            +all(): Category[]
+        }
+        class CategoryService {
+            -categoryRepository: CategoryRepository
+            +findAll(): Category[]
+        }
+
+        "CategoryController" --> "CategoryService"
+        "CategoryService" --> "CategoryRepository"
+    }
+
+    package Lot {
+        interface LotRepository<extends JARepository<Lot, Long>>
+        class LotController {
+            -lotService: LotService
+            +paginate(Integer page, Integer take): Lot[]
+            +one(Long id): Lot
+        }
+        class LotService {
+            -lotRepository: LotRepository
+            +findByPage(Integer page, Integer take): Lot[]
+            +findById(Long id): Lot
+        }
+
+        "LotController" --> "LotService"
+        "LotService" --> "LotRepository"
+    }
+
+    package Exceptions {
+        exception "ResourceNotFound"
+        exception "BadRequest"
+        class ExceptionsAdvice
+
+        "ResourceNotFound" --> "ExceptionsAdvice"
+        "BadRequest" --> "ExceptionsAdvice"
+    }
+}
+
+@enduml
