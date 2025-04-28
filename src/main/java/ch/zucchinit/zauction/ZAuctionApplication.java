@@ -1,13 +1,13 @@
-package ch.etmles.payroll;
+package ch.zucchinit.zauction;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PayrollApplication {
+public class ZAuctionApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PayrollApplication.class, args);
+		SpringApplication.run(ZAuctionApplication.class, args);
 	}
 
 }
