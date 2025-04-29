@@ -1,5 +1,7 @@
 package ch.zucchinit.zauction;
 
+import ch.zucchinit.zauction.Auction.Auction;
+import ch.zucchinit.zauction.Auction.AuctionRepository;
 import ch.zucchinit.zauction.Category.Category;
 import ch.zucchinit.zauction.Category.CategoryRepository;
 import ch.zucchinit.zauction.Lot.Lot;
@@ -14,13 +16,15 @@ public class LoadTestDatabase implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final LotRepository lotRepository;
+    private final AuctionRepository auctionRepository;
 
-    public LoadTestDatabase(CategoryRepository categoryRepository, LotRepository lotRepository) {
+    public LoadTestDatabase(CategoryRepository categoryRepository, LotRepository lotRepository, AuctionRepository auctionRepository) {
         this.categoryRepository = categoryRepository;
         this.lotRepository = lotRepository;
+        this.auctionRepository = auctionRepository;
     }
 
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Category it = categoryRepository.save(new Category("Informatique", null));
         Category computer = categoryRepository.save(new Category("Ordinateurs", it));
         Category screen = categoryRepository.save(new Category("Écrans", computer));
@@ -35,6 +39,10 @@ public class LoadTestDatabase implements CommandLineRunner {
 
         lotRepository.save(new Lot("Ordinateur Saphira Diamond Edition", "Un super ordinateur quantique d'une édition limitée !", "Lausanne", BigDecimal.valueOf(10_000), it));
         lotRepository.save(new Lot("Écran Asus 27 pouces", "Un super écran !", "Morges", BigDecimal.valueOf(1_000), screen));
-        lotRepository.save(new Lot("Pagani Zonda", "La beauté incarnée !", "Gstaad", BigDecimal.valueOf(1_000_000), cars));
+        Lot zonda = lotRepository.save(new Lot("Pagani Zonda", "La beauté incarnée !", "Gstaad", BigDecimal.valueOf(1_000_000), cars));
+
+        auctionRepository.save(new Auction(BigDecimal.valueOf(1_100_000), zonda));
+        auctionRepository.save(new Auction(BigDecimal.valueOf(1_200_000), zonda));
+        auctionRepository.save(new Auction(BigDecimal.valueOf(1_300_000), zonda));
     }
 }

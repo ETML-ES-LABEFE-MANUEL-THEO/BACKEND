@@ -4,14 +4,14 @@ import ch.zucchinit.zauction.Lot.Lot;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Auction {
     @Id @GeneratedValue
     private Long id;
     private BigDecimal price;
-    private LocalDate date;
+    private LocalDateTime date;
 
     @ManyToOne @JoinColumn(name = "lot_id")
     private Lot lot;
@@ -19,12 +19,12 @@ public class Auction {
     public Auction() {}
     public Auction(BigDecimal price, Lot lot) {
         this.price = price;
-        this.date = LocalDate.now();
+        this.date = LocalDateTime.now();
         this.lot = lot;
     }
 
     public Long getId() { return id; }
     public BigDecimal getPrice() { return price; }
-    public LocalDate getDate() { return date; }
+    public LocalDateTime getDate() { return date; }
     public Lot getLot() { return lot; }
 }
