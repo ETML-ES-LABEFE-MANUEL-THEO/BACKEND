@@ -39,6 +39,10 @@ package ch.zucchinit.zauction {
         "LotService" --> "LotRepository"
     }
 
+    package Auction {
+        interface AuctionRepository<extends JARepository<Auction, Long>>
+   }
+
     package Exceptions {
         exception "ResourceNotFound"
         exception "BadRequest"
