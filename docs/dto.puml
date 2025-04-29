@@ -1,0 +1,32 @@
+@startuml
+
+class LotThumbnail {
+    - id : Long
+    - name: String
+    - description : String
+    - location : String
+    - initial_price : BigDecimal
+    - last_price : BigDecimal
+    - thumbnail : String
+    - open_date : DateTime
+    - award_date : DateTime
+    - close_date : DateTime
+    - category : Category
+}
+
+class LotDetails {
+    - id : Long
+    - name: String
+    - description : String
+    - location : String
+    - initial_price : BigDecimal
+    - last_price : BigDecimal
+    - medias : String[]
+    - open_date : DateTime
+    - award_date : DateTime
+    - close_date : DateTime
+    - category : Category
+    - auctions : Auction[]
+}
+
+@enduml

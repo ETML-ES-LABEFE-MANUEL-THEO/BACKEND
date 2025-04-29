@@ -1,4 +1,4 @@
-@startuml
+ @startuml
 
 entity Category {
     * ** id : Integer [PK] **
@@ -13,7 +13,9 @@ entity Lot {
     * description : String
     * initial_price : Decimal
     * location : String
-    * date : DateTime
+    * open_date : DateTime
+    award_date : DateTime
+    close_date : DateTime
     * category_id : Integer [FK]
 }
 Lot ||-- Category : classified by

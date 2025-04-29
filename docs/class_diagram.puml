@@ -26,13 +26,13 @@ package ch.zucchinit.zauction {
         interface LotRepository<extends JARepository<Lot, Long>>
         class LotController {
             -lotService: LotService
-            +paginate(Integer page, Integer take): Lot[]
-            +one(Long id): Lot
+            +paginate(Integer page, Integer take, Category category, String search): LotThumbnail[]
+            +one(Long id): LotDetails
         }
         class LotService {
             -lotRepository: LotRepository
-            +findByPage(Integer page, Integer take): Lot[]
-            +findById(Long id): Lot
+            +findByPageWithCategoryAndSearch(Integer page, Integer take, Category category, String search): LotThumbnail[]
+            +findById(Long id): LotDetails
         }
 
         "LotController" --> "LotService"
@@ -42,11 +42,20 @@ package ch.zucchinit.zauction {
     package Exceptions {
         exception "ResourceNotFound"
         exception "BadRequest"
-        class ExceptionsAdvice
+        class ExceptionsAdvice {
+            + handleValidationErrors: Map<String, String[]>
+        }
 
         "ResourceNotFound" --> "ExceptionsAdvice"
         "BadRequest" --> "ExceptionsAdvice"
     }
+
+    class S3Connector {
+        -s3client: s3Client
+        +uploadMedias(Long id)
+        +getUrls(Long id): String[]
+    }
+    "LotService" --> "S3Connector"
 }
 
 @enduml
