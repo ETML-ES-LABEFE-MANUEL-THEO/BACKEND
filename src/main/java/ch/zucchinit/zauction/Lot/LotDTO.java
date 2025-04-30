@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class LotDTO {
     public record LotPaginatedThumbnail(LotThumbnail[] content, Integer page, Integer take, Integer total) {}
@@ -16,10 +17,10 @@ public class LotDTO {
                              String location,
                              BigDecimal initialPrice,
                              BigDecimal lastPrice,
-                             String[] medias,
+                             List<String> medias,
                              LocalDateTime openDate,
                              LocalDateTime awardDate,
                              LocalDateTime closeDate,
                              @JsonIgnoreProperties("children") Category category,
-                             @JsonIgnoreProperties("lot")Auction[] auctions) {}
+                             @JsonIgnoreProperties("lot") List<Auction> auctions) {}
 }

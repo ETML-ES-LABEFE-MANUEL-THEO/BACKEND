@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class LotService {
 
@@ -18,7 +21,7 @@ public class LotService {
 
     public LotDTO.LotDetails findById(Long id) {
         Lot lot = this.lotRepository.findById(id).orElseThrow(); // TODO add exception
-        String[] medias = new String[0]; // TODO replace with s3 urls
+        List<String> medias = new ArrayList<>(); // TODO replace with s3 urls
 
         return new LotDTO.LotDetails(
                 lot.getId(),
@@ -32,7 +35,11 @@ public class LotService {
                 lot.getAwardDate(),
                 lot.getCloseDate(),
                 lot.getCategory(),
-                lot.getAuctions().toArray(Auction[]::new));
+                lot.getAuctions());
+    }
+
+    static Specification<Lot> isFinished() {
+        return (root, query, cb) -> cb.isNull(root.get("awardDate"));
     }
 
     static Specification<Lot> hasCategoryId(Long categoryId) {
@@ -54,7 +61,7 @@ public class LotService {
     }
 
     public LotDTO.LotPaginatedThumbnail findByPageWithCategoryAndSearch(Integer page, Integer take, Long categoryId, String search) {
-        Specification<Lot> spec = Specification.where(hasCategoryId(categoryId)).and(multiFieldSearch(search));
+        Specification<Lot> spec = Specification.where(hasCategoryId(categoryId)).and(multiFieldSearch(search)).and(isFinished());
         Pageable pageable = PageRequest.of(page, take);
 
         Page<Lot> lots = this.lotRepository.findAll(spec, pageable);
