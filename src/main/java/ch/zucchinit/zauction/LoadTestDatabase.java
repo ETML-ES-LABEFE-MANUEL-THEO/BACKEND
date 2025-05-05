@@ -10,9 +10,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Configuration
 public class LoadTestDatabase implements CommandLineRunner {
@@ -28,43 +27,264 @@ public class LoadTestDatabase implements CommandLineRunner {
     }
 
     public void run(String... args) {
-        Category it = categoryRepository.save(new Category("Informatique", null));
-        Category computer = categoryRepository.save(new Category("Ordinateurs", it));
-        Category screen = categoryRepository.save(new Category("Écrans", computer));
-        categoryRepository.save(new Category("Périphériques", it));
-        categoryRepository.save(new Category("Portables", it));
-        Category jewelry = categoryRepository.save(new Category("Bijoux", null));
-        categoryRepository.save(new Category("Bagues", jewelry));
-        categoryRepository.save(new Category("Colliers", jewelry));
-        Category cars = categoryRepository.save(new Category("Voitures", null));
-        categoryRepository.save(new Category("Luxe", cars));
-        categoryRepository.save(new Category("Sport", cars));
+// --- Création des catégories principales et secondaires ---
 
-        lotRepository.save(new Lot("Ordinateur Saphira Diamond Edition", "Un super ordinateur quantique d'une édition limitée !", "Lausanne", BigDecimal.valueOf(10_000), getRandomMedias(), it));
-        lotRepository.save(new Lot("Écran Asus 27 pouces", "Un super écran !", "Morges", BigDecimal.valueOf(1_000), getRandomMedias(), screen));
-        Lot zonda = lotRepository.save(new Lot("Pagani Zonda", "La beauté incarnée !", "Gstaad", BigDecimal.valueOf(1_000_000), getRandomMedias(), cars));
+        Category informatique = categoryRepository.save(new Category("Informatique", null));
+        Category ordinateurs = categoryRepository.save(new Category("Ordinateurs", informatique));
+        Category ecrans = categoryRepository.save(new Category("Écrans", informatique));
+        Category peripheriques = categoryRepository.save(new Category("Périphériques", informatique));
+        Category smartphones = categoryRepository.save(new Category("Smartphones", informatique));
 
-        auctionRepository.save(new Auction(BigDecimal.valueOf(1_100_000), zonda));
-        auctionRepository.save(new Auction(BigDecimal.valueOf(1_200_000), zonda));
-        auctionRepository.save(new Auction(BigDecimal.valueOf(1_300_000), zonda));
-    }
+        Category bijoux = categoryRepository.save(new Category("Bijoux", null));
+        Category bagues = categoryRepository.save(new Category("Bagues", bijoux));
+        Category colliers = categoryRepository.save(new Category("Colliers", bijoux));
+        Category montres = categoryRepository.save(new Category("Montres", bijoux));
 
-    List<String> getRandomMedias() {
-        List<String> medias = new ArrayList<>(
-            List.of(
-                "https://images.unsplash.com/photo-1559703248-dcaaec9fab78?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1557180295-76eee20ae8aa?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1429087969512-1e85aab2683d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/reserve/LJIZlzHgQ7WPSh5KVTCB_Typewriter.jpg?q=80&w=1992&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1528825871115-3581a5387919?q=80&w=1915&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1516962126636-27ad087061cc?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1554591203-3c8b71297add?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                "https://images.unsplash.com/photo-1565656898731-61d5df85f9a7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        Category voitures = categoryRepository.save(new Category("Voitures", null));
+        Category luxe = categoryRepository.save(new Category("Luxe", voitures));
+        Category sport = categoryRepository.save(new Category("Sport", voitures));
+        Category utilitaires = categoryRepository.save(new Category("Utilitaires", voitures));
+
+        Category art = categoryRepository.save(new Category("Art", null));
+        Category peinture = categoryRepository.save(new Category("Peinture", art));
+        Category sculpture = categoryRepository.save(new Category("Sculpture", art));
+        Category photographie = categoryRepository.save(new Category("Photographie", art));
+
+        Category maison = categoryRepository.save(new Category("Maison", null));
+        Category meubles = categoryRepository.save(new Category("Meubles", maison));
+        Category electro = categoryRepository.save(new Category("Électroménager", maison));
+        Category deco = categoryRepository.save(new Category("Décoration", maison));
+
+
+        Lot macbook = lotRepository.save(new Lot(
+                "MacBook Pro 16'' M3 Max",
+                "Dernière génération, état neuf, garantie 2 ans.",
+                "Genève",
+                BigDecimal.valueOf(3500),
+                List.of(
+                        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp16-spaceblack-select-202310?wid=2000&hei=2000&fmt=jpeg&qlt=95&.v=1697311090226", // Image officielle Apple
+                        "https://www.apple.com/ch-de/newsroom/images/product/mac/standard/Apple-MacBook-Pro-16-inch-hero-231030_big.jpg.large.jpg"
+                ),
+                ordinateurs
         ));
 
-        Collections.shuffle(medias);
-        return medias.subList(0, 5);
+        Lot dell = lotRepository.save(new Lot(
+                "Dell XPS 13",
+                "Ultrabook performant, parfait pour les déplacements.",
+                "Lausanne",
+                BigDecimal.valueOf(1200),
+                List.of(
+                        "https://i.dell.com/sites/csimages/App-Merchandizing_Images/all/xps-13-9310-laptop-campaign-hero-504x350-ng.psd",
+                        "https://www.notebookcheck.net/uploads/tx_nbc2/DellXPS139310__1_.JPG"
+                ),
+                ordinateurs
+        ));
+
+        Lot iphone = lotRepository.save(new Lot(
+                "iPhone 15 Pro Max",
+                "128 Go, bleu, sous blister.",
+                "Neuchâtel",
+                BigDecimal.valueOf(1100),
+                List.of(
+                        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-pro-model-unselect-gallery-1-202309?wid=5120&hei=2880&fmt=jpeg&qlt=80&.v=1692914157015"
+                ),
+                smartphones
+        ));
+
+        Lot appleWatch = lotRepository.save(new Lot(
+                "Apple Watch Series 9",
+                "Boîtier 45mm, bracelet sport, état impeccable.",
+                "Fribourg",
+                BigDecimal.valueOf(400),
+                List.of(
+                        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/watch-card-40-s9-202309?wid=600&hei=600&fmt=jpeg&qlt=95&.v=1693501324197"
+                ),
+                peripheriques
+        ));
+
+        Lot ecranSamsung = lotRepository.save(new Lot(
+                "Écran Samsung 32'' 4K",
+                "Idéal pour le gaming et le travail.",
+                "Yverdon",
+                BigDecimal.valueOf(350),
+                List.of(
+                        "https://images.samsung.com/is/image/samsung/p6pim/ch_fr/ls32bm700upxen/gallery/ch-fr-smart-monitor-m7-432623-ls32bm700upxen-533670418?$650_519_PNG$"
+                ),
+                ecrans
+        ));
+
+        Lot bagueOr = lotRepository.save(new Lot(
+                "Bague en or blanc 18k",
+                "Serti diamant, taille 54.",
+                "Lausanne",
+                BigDecimal.valueOf(1500),
+                List.of(
+                        "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80"
+                ),
+                bagues
+        ));
+
+        Lot rolex = lotRepository.save(new Lot(
+                "Rolex Submariner",
+                "Montre de luxe, édition 2020, certificat d’authenticité.",
+                "Genève",
+                BigDecimal.valueOf(9000),
+                List.of(
+                        "https://www.rolex.com/content/dam/rolexcom/products/watch_assets_front/2020/upright/m126610ln-0001.png"
+                ),
+                montres
+        ));
+
+        Lot collierPerles = lotRepository.save(new Lot(
+                "Collier de perles Akoya",
+                "Longueur 45cm, fermoir or jaune.",
+                "Montreux",
+                BigDecimal.valueOf(2500),
+                List.of(
+                        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+                ),
+                colliers
+        ));
+
+        Lot ferrari = lotRepository.save(new Lot(
+                "Ferrari 488 GTB",
+                "V8, 670ch, rouge, 15'000km.",
+                "Zürich",
+                BigDecimal.valueOf(210_000),
+                List.of(
+                        "https://cdn.ferrari.com/cms/network/media/img/resize/5f6d1b0d4b5a7b001f0b5e6e-ferrari-488-gtb-2015-1280x960.jpg"
+                ),
+                sport
+        ));
+
+        Lot renaultKangoo = lotRepository.save(new Lot(
+                "Renault Kangoo Express",
+                "Utilitaire, diesel, 2018, 80'000km.",
+                "Lausanne",
+                BigDecimal.valueOf(9000),
+                List.of(
+                        "https://cdn.group.renault.com/ren/master/renault-new-kangoo-express-vu-ph1-001.jpg"
+                ),
+                utilitaires
+        ));
+
+        Lot tesla = lotRepository.save(new Lot(
+                "Tesla Model S Plaid",
+                "Électrique, 2023, 5'000km, full options.",
+                "Genève",
+                BigDecimal.valueOf(120_000),
+                List.of(
+                        "https://www.tesla.com/sites/default/files/modelsx-new/social/model-s-hero-social.jpg"
+                ),
+                luxe
+        ));
+
+        Lot tableau = lotRepository.save(new Lot(
+                "Tableau 'Coucher de soleil sur le Léman'",
+                "Huile sur toile, artiste local.",
+                "Vevey",
+                BigDecimal.valueOf(1800),
+                List.of(
+                        "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80"
+                ),
+                peinture
+        ));
+
+        Lot statue = lotRepository.save(new Lot(
+                "Sculpture contemporaine",
+                "Acier poli, 1m20 de haut.",
+                "Lausanne",
+                BigDecimal.valueOf(3200),
+                List.of(
+                        "https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=800&q=80"
+                ),
+                sculpture
+        ));
+
+        Lot photo = lotRepository.save(new Lot(
+                "Photographie signée",
+                "Édition limitée, 1/10, encadrée.",
+                "Genève",
+                BigDecimal.valueOf(600),
+                List.of(
+                        "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=800&q=80"
+                ),
+                photographie
+        ));
+
+        Lot canape = lotRepository.save(new Lot(
+                "Canapé d’angle en cuir",
+                "3 places, état neuf, couleur taupe.",
+                "Lausanne",
+                BigDecimal.valueOf(950),
+                List.of(
+                        "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=800&q=80"
+                ),
+                meubles
+        ));
+
+        Lot frigo = lotRepository.save(new Lot(
+                "Réfrigérateur Samsung Family Hub",
+                "Connecté, grande capacité.",
+                "Genève",
+                BigDecimal.valueOf(1800),
+                List.of(
+                        "https://images.samsung.com/is/image/samsung/p6pim/ch_fr/rs6ha8891b1ef/gallery/ch-fr-side-by-side-rs8000a-rs6ha8891b1ef-530345637?$650_519_PNG$"
+                ),
+                electro
+        ));
+
+        Lot vase = lotRepository.save(new Lot(
+                "Vase en céramique artisanale",
+                "Pièce unique, signé.",
+                "Vevey",
+                BigDecimal.valueOf(200),
+                List.of(
+                        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+                ),
+                deco
+        ));
+
+        List<Lot> allLots = lotRepository.findAll();
+        generateChronologicalAuctions(allLots, auctionRepository);
+    }
+
+    public void generateChronologicalAuctions(List<Lot> lots, AuctionRepository auctionRepository) {
+        Random random = new Random();
+
+        for (Lot lot : lots) {
+            int auctionCount = 10 + random.nextInt(991);
+
+            BigDecimal basePrice = lot.getInitialPrice();
+            BigDecimal currentPrice = basePrice;
+
+            LocalDateTime now = LocalDateTime.now();
+
+            // 1. Générer une liste de dates aléatoires dans la période souhaitée
+            List<LocalDateTime> auctionDates = new ArrayList<>();
+            for (int i = 0; i < auctionCount; i++) {
+                int daysAgo = random.nextInt(90);
+                int hour = 8 + random.nextInt(12);
+                int minute = random.nextInt(60);
+                LocalDateTime date = now.minusDays(daysAgo)
+                        .withHour(hour)
+                        .withMinute(minute)
+                        .withSecond(0)
+                        .withNano(0);
+                auctionDates.add(date);
+            }
+
+            // 2. Trier les dates dans l'ordre croissant (de la plus ancienne à la plus récente)
+            auctionDates.sort(Comparator.naturalOrder());
+
+            // 3. Créer et sauvegarder les enchères dans l'ordre des dates
+            for (LocalDateTime auctionDate : auctionDates) {
+                BigDecimal increment = BigDecimal.valueOf((random.nextDouble() * 0.1 + 0.01) * basePrice.doubleValue());
+                currentPrice = currentPrice.add(increment);
+
+                Auction auction = new Auction(currentPrice, lot, auctionDate);
+                auctionRepository.save(auction);
+            }
+        }
     }
 }

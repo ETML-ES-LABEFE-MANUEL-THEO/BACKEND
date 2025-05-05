@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Lot {
@@ -51,5 +52,8 @@ public class Lot {
     public LocalDateTime getCloseDate() { return closeDate; }
     public List<String> getMedias() { return medias; }
     public Category getCategory() { return category; }
-    public List<Auction> getAuctions() { return auctions; }
+    public List<Auction> getAuctions() {
+        return auctions.stream().sorted((a, b) -> Math.toIntExact(b.getId() - a.getId())
+        ).collect(Collectors.toList());
+    }
 }

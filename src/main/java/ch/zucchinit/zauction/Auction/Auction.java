@@ -17,9 +17,9 @@ public class Auction {
     private Lot lot;
 
     public Auction() {}
-    public Auction(BigDecimal price, Lot lot) {
+    public Auction(BigDecimal price, Lot lot, LocalDateTime date) {
         this.price = price;
-        this.date = LocalDateTime.now();
+        this.date = date;
         this.lot = lot;
     }
 
