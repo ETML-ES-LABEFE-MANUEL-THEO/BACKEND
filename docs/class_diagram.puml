@@ -18,6 +18,7 @@ package ch.zucchinit.zauction {
         class CategoryService {
             -categoryRepository: CategoryRepository
             +findAll(): Category[]
+            +getChildIds(Category category, Long ids[])
         }
 
         "CategoryController" --> "CategoryService"
@@ -34,10 +35,11 @@ package ch.zucchinit.zauction {
         }
         class LotService {
             -lotRepository: LotRepository
+            -categoryService: CategoryService
             +findByPageWithCategoryAndSearch(Integer page, Integer take, Category category, String search): LotDTO.LotPaginatedThumbnail
             +findById(Long id): LotDTO.LotDetails
             {static} isFinished() : Specification<Lot>
-            {static} hasCategoryId(Long id) : Specification<Lot>
+            -hasCategoryId(Long id) : Specification<Lot>
             {static} multiFieldSearch(String keyword) : Specification<Lot>
         }
 
