@@ -2,6 +2,7 @@ package ch.zucchinit.zauction.Category;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,5 +16,16 @@ public class CategoryService {
 
     public List<Category> findAll() {
         return categoryRepository.findByParentIsNull();
+    }
+
+    public List<Long> getChildIds(Long categoryId, List<Long> ids) {
+        if (ids == null) ids = new ArrayList<>();
+
+        for (Category child : categoryRepository.findById(categoryId).orElseGet(Category::new).getChildren()) {
+            ids.add(child.getId());
+            getChildIds(child.getId(), ids);
+        }
+
+        return ids;
     }
 }

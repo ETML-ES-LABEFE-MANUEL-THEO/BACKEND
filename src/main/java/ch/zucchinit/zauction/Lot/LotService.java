@@ -1,5 +1,7 @@
 package ch.zucchinit.zauction.Lot;
 
+import ch.zucchinit.zauction.Category.CategoryRepository;
+import ch.zucchinit.zauction.Category.CategoryService;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +16,11 @@ import java.util.List;
 public class LotService {
 
     private final LotRepository lotRepository;
+    private final CategoryService categoryService;
 
-    public LotService(LotRepository lotRepository) {
+    public LotService(LotRepository lotRepository, CategoryService categoryRepository) {
         this.lotRepository = lotRepository;
+        this.categoryService = categoryRepository;
     }
 
     public LotDTO.LotDetails findById(Long id) {
@@ -42,8 +46,17 @@ public class LotService {
         return (root, query, cb) -> cb.isNull(root.get("awardDate"));
     }
 
-    static Specification<Lot> hasCategoryId(Long categoryId) {
-        return (root, query, cb) -> categoryId == null ? null : cb.equal(root.get("category").get("id"), categoryId);
+    Specification<Lot> hasCategoryId(Long categoryId) {
+        return (root, query, cb) -> {
+            if (categoryId == null) return null;
+            else {
+                List<Long> ids = categoryService.getChildIds(categoryId, null);
+                return cb.or(
+                    cb.equal(root.get("category").get("id"), categoryId),
+                    root.get("category").get("id").in(ids)
+                );
+            }
+        };
     }
 
     static Specification<Lot> multiFieldSearch(String keyword) {
