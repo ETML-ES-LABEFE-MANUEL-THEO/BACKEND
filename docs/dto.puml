@@ -1,17 +1,19 @@
 @startuml
 
+class LotPaginatedThumbnail {
+    - content : LotThumbnail[]
+    - page : Integer
+    - take : Integer
+    - total : Long
+}
+
 class LotThumbnail {
     - id : Long
     - name: String
-    - description : String
     - location : String
-    - initial_price : BigDecimal
-    - last_price : BigDecimal
+    - initial_price : Decimal
+    - last_price : Decimal
     - thumbnail : String
-    - open_date : DateTime
-    - award_date : DateTime
-    - close_date : DateTime
-    - category : Category
 }
 
 class LotDetails {
@@ -19,8 +21,8 @@ class LotDetails {
     - name: String
     - description : String
     - location : String
-    - initial_price : BigDecimal
-    - last_price : BigDecimal
+    - initial_price : Decimal
+    - last_price : Decimal
     - medias : String[]
     - open_date : DateTime
     - award_date : DateTime

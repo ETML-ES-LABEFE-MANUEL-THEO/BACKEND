@@ -8,7 +8,9 @@ package ch.zucchinit.zauction {
     "ZAuctionApplication" --> "SpringApplication"
 
     package Category {
-        interface CategoryRepository<extends JARepository<Category, Long>>
+        interface CategoryRepository<extends JARepository<Category, Long>> {
+            -findByParentIsNull: Category[]
+        }
         class CategoryController {
             -categoryService: CategoryService
             +all(): Category[]
@@ -24,15 +26,19 @@ package ch.zucchinit.zauction {
 
     package Lot {
         interface LotRepository<extends JARepository<Lot, Long>>
+        class LotDTO
         class LotController {
             -lotService: LotService
-            +paginate(Integer page, Integer take, Category category, String search): LotThumbnail[]
-            +one(Long id): LotDetails
+            +paginate(Integer page, Integer take, Category category, String search): LotDTO.LotPaginatedThumbnail
+            +one(Long id): LotDTO.LotDetails
         }
         class LotService {
             -lotRepository: LotRepository
-            +findByPageWithCategoryAndSearch(Integer page, Integer take, Category category, String search): LotThumbnail[]
-            +findById(Long id): LotDetails
+            +findByPageWithCategoryAndSearch(Integer page, Integer take, Category category, String search): LotDTO.LotPaginatedThumbnail
+            +findById(Long id): LotDTO.LotDetails
+            {static} isFinished() : Specification<Lot>
+            {static} hasCategoryId(Long id) : Specification<Lot>
+            {static} multiFieldSearch(String keyword) : Specification<Lot>
         }
 
         "LotController" --> "LotService"
@@ -45,13 +51,22 @@ package ch.zucchinit.zauction {
 
     package Exceptions {
         exception "ResourceNotFound"
-        exception "BadRequest"
+        class "ExceptionsDTO" {}
         class ExceptionsAdvice {
-            + handleValidationErrors: Map<String, String[]>
+            + resourceNotFoundHandler: void
+            + validationErrorHandler : ExceptionsDTO
+            + unknownErrorHandler: ExceptionsDTO
         }
 
         "ResourceNotFound" --> "ExceptionsAdvice"
-        "BadRequest" --> "ExceptionsAdvice"
+        "ExceptionsDTO" --> "ExceptionsAdvice"
+    }
+
+    package Security {
+        class SecurityConfig {
+            corsConfigurationSource: CorsConfigurationSource
+            securityFilterChain: SecurityFilterChain
+        }
     }
 
     class S3Connector {
