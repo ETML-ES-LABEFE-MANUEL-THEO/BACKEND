@@ -1,6 +1,7 @@
 package ch.zucchinit.zauction.Lot;
 
 import ch.zucchinit.zauction.Auction.Auction;
+import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class LotService {
     }
 
     public LotDTO.LotDetails findById(Long id) {
-        Lot lot = this.lotRepository.findById(id).orElseThrow(); // TODO add exception
+        Lot lot = this.lotRepository.findById(id).orElseThrow(ResourceNotFound::new);
         List<String> medias = new ArrayList<>(); // TODO replace with s3 urls
 
         return new LotDTO.LotDetails(
