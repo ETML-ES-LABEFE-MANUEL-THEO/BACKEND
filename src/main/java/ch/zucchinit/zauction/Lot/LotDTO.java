@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class LotDTO {
-    public record LotPaginatedThumbnail(LotThumbnail[] content, Integer page, Integer take, Integer total) {}
+    public record LotPaginatedThumbnail(LotThumbnail[] content, Integer page, Integer take, Long total) {}
     public record LotThumbnail(Long id, String name, String location, BigDecimal initialPrice, BigDecimal lastPrice, String thumbnail) {}
     public record LotDetails(Long id,
                              String name,

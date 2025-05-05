@@ -72,6 +72,6 @@ public class LotService {
             return new LotDTO.LotThumbnail(lot.getId(), lot.getName(), lot.getLocation(), lot.getInitialPrice(), lot.getLastPrice(), thumbnail);
         }).toArray(LotDTO.LotThumbnail[]::new);
 
-        return new LotDTO.LotPaginatedThumbnail(thumbnails, page, take, lots.getNumberOfElements());
+        return new LotDTO.LotPaginatedThumbnail(thumbnails, page, take, lots.getTotalElements());
     }
 }
