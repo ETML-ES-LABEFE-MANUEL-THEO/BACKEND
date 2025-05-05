@@ -20,6 +20,8 @@ public class Lot {
     private LocalDateTime openDate;
     private LocalDateTime awardDate;
     private LocalDateTime closeDate;
+    @ElementCollection
+    private List<String> medias;
 
     @ManyToOne @JoinColumn(name = "category_id")
     private Category category;
@@ -28,11 +30,12 @@ public class Lot {
     private List<Auction> auctions;
 
     public Lot() {}
-    public Lot(String name, String description, String location, BigDecimal initialPrice, Category category) {
+    public Lot(String name, String description, String location, BigDecimal initialPrice, List<String> medias, Category category) {
         this.name = name;
         this.description = description;
         this.location = location;
         this.initialPrice = initialPrice;
+        this.medias = medias;
         this.category = category;
         this.openDate = LocalDateTime.now();
     }
@@ -46,6 +49,7 @@ public class Lot {
     public LocalDateTime getOpenDate() { return openDate; }
     public LocalDateTime getAwardDate() { return awardDate; }
     public LocalDateTime getCloseDate() { return closeDate; }
+    public List<String> getMedias() { return medias; }
     public Category getCategory() { return category; }
     public List<Auction> getAuctions() { return auctions; }
 }
