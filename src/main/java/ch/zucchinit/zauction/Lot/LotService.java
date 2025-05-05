@@ -1,6 +1,5 @@
 package ch.zucchinit.zauction.Lot;
 
-import ch.zucchinit.zauction.Auction.Auction;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

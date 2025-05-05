@@ -16,11 +16,11 @@ public class ExceptionsAdvice {
     @ResponseBody
     @ExceptionHandler(ResourceNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    void ResourceNotFoundHandler(ResourceNotFound ex) {}
+    void resourceNotFoundHandler(ResourceNotFound ex) {}
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    List<ExceptionsDTO.ValidationError> ValidationErrorHandler(MethodArgumentNotValidException ex) {
+    List<ExceptionsDTO.ValidationError> validationErrorHandler(MethodArgumentNotValidException ex) {
         Map<String, List<String>> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String field = ((FieldError) error).getField();
@@ -39,7 +39,7 @@ public class ExceptionsAdvice {
     @ResponseBody
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ExceptionsDTO.GenericError UnknownErrorHandler(Exception ex) {
+    ExceptionsDTO.GenericError unknownErrorHandler(Exception ex) {
         return new ExceptionsDTO.GenericError(ex.getMessage());
     }
 }
