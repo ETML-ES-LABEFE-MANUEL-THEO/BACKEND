@@ -18,7 +18,8 @@ package ch.zucchinit.zauction {
         class CategoryService {
             -categoryRepository: CategoryRepository
             +findAll(): Category[]
-            +getChildIds(Category category, Long ids[])
+            +getChildIds(Category category, Long ids[]): Long[]
+            +getReverseCategories(Long categoryId): Category[]
         }
 
         "CategoryController" --> "CategoryService"
