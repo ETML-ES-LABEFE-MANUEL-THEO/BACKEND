@@ -1,5 +1,6 @@
 package ch.zucchinit.zauction.Category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -26,4 +27,5 @@ public class Category {
     public Long getId() { return id; }
     public String getName() { return name; }
     public List<Category> getChildren() { return children; }
+    public @JsonIgnore Category getParent() { return parent; }
 }

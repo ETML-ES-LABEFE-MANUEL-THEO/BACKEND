@@ -34,7 +34,7 @@ public class LotService {
                 lot.getOpenDate(),
                 lot.getAwardDate(),
                 lot.getCloseDate(),
-                lot.getCategory(),
+                categoryService.getReverseCategories(lot.getCategory().getId()),
                 lot.getAuctions());
     }
 

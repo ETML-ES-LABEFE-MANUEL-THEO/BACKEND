@@ -21,6 +21,6 @@ public class LotDTO {
                              LocalDateTime openDate,
                              LocalDateTime awardDate,
                              LocalDateTime closeDate,
-                             @JsonIgnoreProperties("children") Category category,
+                             @JsonIgnoreProperties("children") List<Category> categories,
                              @JsonIgnoreProperties("lot") List<Auction> auctions) {}
 }
