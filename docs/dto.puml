@@ -1,34 +1,52 @@
 @startuml
 
+class UserDetails {
+    -firstName: String
+    -lastName: String
+    -balance: Decimal
+}
+
+class UserLogin {
+    -email: String
+    -password: String
+}
+
+class UserRegister {
+    -email: String
+    -firstName: String
+    -lastName: String
+    -password: String
+}
+
 class LotPaginatedThumbnail {
-    - content : LotThumbnail[]
-    - page : Integer
-    - take : Integer
-    - total : Long
+    -content: LotThumbnail[]
+    -page: Integer
+    -take: Integer
+    -total: Long
 }
 
 class LotThumbnail {
-    - id : Long
-    - name: String
-    - location : String
-    - initial_price : Decimal
-    - last_price : Decimal
-    - thumbnail : String
+    -id: Long
+    -name: String
+    -location: String
+    -initial_price: Decimal
+    -last_price: Decimal
+    -thumbnail: String
 }
 
 class LotDetails {
-    - id : Long
-    - name: String
-    - description : String
-    - location : String
-    - initial_price : Decimal
-    - last_price : Decimal
-    - medias : String[]
-    - open_date : DateTime
-    - award_date : DateTime
-    - close_date : DateTime
-    - category : Category[]
-    - auctions : Auction[]
+    -id: Long
+    -name: String
+    -description: String
+    -location: String
+    -initial_price: Decimal
+    -last_price: Decimal
+    -medias: String[]
+    -open_date: DateTime
+    -award_date: DateTime
+    -close_date: DateTime
+    -category: Category[]
+    -auctions: Auction[]
 }
 
 @enduml

@@ -1,5 +1,23 @@
  @startuml
 
+entity User {
+    * ** id : Integer [PK] **
+    * firstName : String
+    * lastName : String
+    * email : String [Unique]
+    * password : String
+    * balance : Decimal
+}
+
+entity Token {
+    * ** id : String [PK] **
+    * creation_date: DateTime
+    * expire_date: DateTime
+    * valid: Boolean
+    * user_id: Integer [FK]
+}
+Token |o-- User : authenticated by
+
 entity Category {
     * ** id : Integer [PK] **
     * name : String
@@ -13,19 +31,25 @@ entity Lot {
     * description : String
     * initial_price : Decimal
     * location : String
-    * open_date : DateTime
+    * creation_date: DateTime
+    open_date : DateTime
     award_date : DateTime
     close_date : DateTime
     * category_id : Integer [FK]
+    * seller_id: Integer[FK]
+    * buyer_id: Integer[FK]
 }
 Lot ||-- Category : classified by
+Lot ||-- User : selled by
+Lot ||-- User : buyed by
 
 entity Auction {
     * ** id : Integer [PK] **
     * price : Decimal
     * date : DateTime
     * lot_id : Integer [FK]
+    * user_id : Integer [FK]
 }
 Lot }o-- Auction : priced by
-
+Auction ||-- User : bid by
 @enduml

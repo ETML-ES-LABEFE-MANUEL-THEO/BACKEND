@@ -7,6 +7,35 @@ package ch.zucchinit.zauction {
     }
     "ZAuctionApplication" --> "SpringApplication"
 
+    package Auth {
+        interface UserRepository<extends JARepository<User, Long>>
+        interface TokenRepository<extends JARepository<Token, Long>>
+        class AuthDTO
+        class AuthController {
+            -userService: UserService
+            -tokenService: TokenService
+            +register(AuthDTO.UserRegister register): AuthDTO.UserDetails
+            +login(AuthDTO.UserLogin login):   AuthDTO.UserDetails
+            +logout(): void
+            +me(): AuthDTO.UserDetails
+        }
+        class UserService {
+            -getUserDetails(User user): AuthDTO.UserDetails
+            +findById(Long id): AuthDTO.UserDetails
+            +create(AuthDTO.UserRegister register): AuthDTO.UserDetails
+        }
+        class TokenService {
+            +registerToken(Long userId): void
+            +authenticateToken(): boolean
+            +unregisterToken(): void
+        }
+
+        "AuthController" --> "UserService"
+        "AuthController" --> "TokenService"
+        "UserService" --> "UserRepository"
+        "TokenService" --> "TokenRepository"
+    }
+
     package Category {
         interface CategoryRepository<extends JARepository<Category, Long>> {
             -findByParentIsNull: Category[]
@@ -56,9 +85,9 @@ package ch.zucchinit.zauction {
         exception "ResourceNotFound"
         class "ExceptionsDTO" {}
         class ExceptionsAdvice {
-            + resourceNotFoundHandler: void
-            + validationErrorHandler : ExceptionsDTO
-            + unknownErrorHandler: ExceptionsDTO
+            +resourceNotFoundHandler: void
+            +validationErrorHandler : ExceptionsDTO
+            +unknownErrorHandler: ExceptionsDTO
         }
 
         "ResourceNotFound" --> "ExceptionsAdvice"
@@ -67,8 +96,9 @@ package ch.zucchinit.zauction {
 
     package Security {
         class SecurityConfig {
-            corsConfigurationSource: CorsConfigurationSource
-            securityFilterChain: SecurityFilterChain
+            -AUTHENTICATED_ROUTES: String[]
+            -corsConfigurationSource: CorsConfigurationSource
+            +securityFilterChain: SecurityFilterChain
         }
     }
 
