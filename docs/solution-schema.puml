@@ -1,20 +1,26 @@
 @startuml
 
 actor User
-cloud Web
-interface AmazonS3
 
-folder Infra {
-    node Frontend
-    node Backend
-    database Database
+cloud "Web" as Web
+
+folder "Infra" {
+    node "Proxy" as Proxy
+    node "Serveur Applicatif" as AppServer {
+        node "Frontend" as Frontend
+        node "Backend" as Backend
+    }
+    database "Database" as Database
 }
 
-User .. Web
-Web .. Frontend
-Web .. AmazonS3
-Frontend -- Backend
-Backend -- Database
-Backend .. AmazonS3
+interface "Amazon S3" as AmazonS3
+
+User -- Web : HTTP/HTTPS (80/443)
+Web -- Proxy : HTTP/HTTPS (80/443)
+Proxy -- Frontend : HTTP (80)
+Frontend -- Backend : HTTP (8080)
+Backend -- Database : TCP (5432)
+Frontend -- AmazonS3 : HTTPS (443)
+Backend -- AmazonS3 : HTTPS (443)
 
 @enduml

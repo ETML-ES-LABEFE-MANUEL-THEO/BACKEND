@@ -27,7 +27,7 @@ class LotDetails {
     - open_date : DateTime
     - award_date : DateTime
     - close_date : DateTime
-    - category : Category
+    - category : Category[]
     - auctions : Auction[]
 }
 
