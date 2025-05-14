@@ -249,6 +249,134 @@
                 "variables": ""
               }
             }
+          },
+          {
+            "name": "Auth me",
+            "url": "{{BASE_URL}}/auth/me",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization=666602b9-aa30-4355-961a-3cb5e9e753d1",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auth register",
+            "url": "{{BASE_URL}}/auth/register",
+            "method": "POST",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"Test\",\n  \"email\": \"test@test.com\",\n  \"password\": \"12345678\"\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auth login",
+            "url": "{{BASE_URL}}/auth/login",
+            "method": "POST",
+            "headers": [],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"email\": \"test@test.com\",\n  \"password\": \"12345678\"\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auth logout",
+            "url": "{{BASE_URL}}/auth/logout",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization=666602b9-aa30-4355-961a-3cb5e9e753d1",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
           }
         ]
       }
