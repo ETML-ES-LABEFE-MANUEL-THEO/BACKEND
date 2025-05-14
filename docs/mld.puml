@@ -13,7 +13,7 @@ entity Token {
     * ** id : String [PK] **
     * creation_date: DateTime
     * expire_date: DateTime
-    * valid: Boolean
+    * expired: Boolean
     * user_id: Integer [FK]
 }
 Token |o-- User : authenticated by

@@ -16,18 +16,24 @@ package ch.zucchinit.zauction {
             -tokenService: TokenService
             +register(AuthDTO.UserRegister register): AuthDTO.UserDetails
             +login(AuthDTO.UserLogin login):   AuthDTO.UserDetails
-            +logout(): void
+            +unregister(): void
             +me(): AuthDTO.UserDetails
         }
         class UserService {
-            -getUserDetails(User user): AuthDTO.UserDetails
-            +findById(Long id): AuthDTO.UserDetails
-            +create(AuthDTO.UserRegister register): AuthDTO.UserDetails
+            -userRepository: UserRepository
+            +getUserDetails(User user): AuthDTO.UserDetails
+            +findUserByEmailAndPassword(String email, String password): AuthDTO.UserDetails
+            +createUser(AuthDTO.UserRegister register): AuthDTO.UserDetails
         }
         class TokenService {
-            +registerToken(Long userId): void
-            +authenticateToken(): boolean
-            +unregisterToken(): void
+            -tokenMinutesValidity: Integer
+            -tokenRepository: TokenRepository
+            +getCookieToken(String tokenValue): Cookie
+            +extractCookieToken(Cookie[] cookies): Cookie
+            +deleteCookieToken(): Cookie
+            +registerToken(User user): void
+            +findTokenById(String tokenValue): Token
+            +unregisterToken(Token token): void
         }
 
         "AuthController" --> "UserService"
@@ -83,6 +89,7 @@ package ch.zucchinit.zauction {
 
     package Exceptions {
         exception "ResourceNotFound"
+        exception "NotAuthorized"
         class "ExceptionsDTO" {}
         class ExceptionsAdvice {
             +resourceNotFoundHandler: void
@@ -91,14 +98,20 @@ package ch.zucchinit.zauction {
         }
 
         "ResourceNotFound" --> "ExceptionsAdvice"
+        "NotAuthorized" --> "NotAuthorized"
         "ExceptionsDTO" --> "ExceptionsAdvice"
     }
 
     package Security {
         class SecurityConfig {
-            -AUTHENTICATED_ROUTES: String[]
             -corsConfigurationSource: CorsConfigurationSource
             +securityFilterChain: SecurityFilterChain
+        }
+
+        class TokenAuthenticationFilter {
+            {static} authCookieName: String
+            -tokenService: TokenService
+            #doFilterInternal(): void
         }
     }
 
