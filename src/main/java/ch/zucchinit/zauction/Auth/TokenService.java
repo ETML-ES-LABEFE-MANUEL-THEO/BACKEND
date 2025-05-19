@@ -25,6 +25,7 @@ public class TokenService {
         Cookie cookie = new Cookie(TokenAuthenticationFilter.authCookieName, tokenValue);
         cookie.setMaxAge(tokenMinutesValidity * 60);
         cookie.setSecure(true);
+        cookie.setPath("/");
         cookie.setHttpOnly(true);
 
         return cookie;
