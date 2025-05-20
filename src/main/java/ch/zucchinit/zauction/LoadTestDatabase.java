@@ -2,6 +2,8 @@ package ch.zucchinit.zauction;
 
 import ch.zucchinit.zauction.Auction.Auction;
 import ch.zucchinit.zauction.Auction.AuctionRepository;
+import ch.zucchinit.zauction.Auth.User;
+import ch.zucchinit.zauction.Auth.UserRepository;
 import ch.zucchinit.zauction.Category.Category;
 import ch.zucchinit.zauction.Category.CategoryRepository;
 import ch.zucchinit.zauction.Lot.Lot;
@@ -16,17 +18,20 @@ import java.util.*;
 @Configuration
 public class LoadTestDatabase implements CommandLineRunner {
 
+    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final LotRepository lotRepository;
     private final AuctionRepository auctionRepository;
 
-    public LoadTestDatabase(CategoryRepository categoryRepository, LotRepository lotRepository, AuctionRepository auctionRepository) {
+    public LoadTestDatabase(UserRepository userRepository, CategoryRepository categoryRepository, LotRepository lotRepository, AuctionRepository auctionRepository) {
+        this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.lotRepository = lotRepository;
         this.auctionRepository = auctionRepository;
     }
 
     public void run(String... args) {
+        userRepository.save(new User("John", "Snow", "john.snow@zauction.ch", ""));
 // Art & Antiquités
         Category artEtAntiquites = categoryRepository.save(new Category("Art & Antiquités", null));
 
