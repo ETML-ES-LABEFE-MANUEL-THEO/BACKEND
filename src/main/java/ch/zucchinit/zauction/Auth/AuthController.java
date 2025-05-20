@@ -3,8 +3,10 @@ package ch.zucchinit.zauction.Auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,25 +22,25 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthDTO.UserDetails register(HttpServletResponse response, @Valid @RequestBody AuthDTO.UserRegister userRegister) {
+    public AuthDTO.UserProfile register(HttpServletResponse response, @Valid @RequestBody AuthDTO.UserRegister userRegister) {
         User user = userService.createUser(userRegister);
         Token token = tokenService.registerToken(user);
 
         Cookie cookieToken = tokenService.getCookieToken(token.getToken());
         response.addCookie(cookieToken);
 
-        return userService.getUserDetails(user);
+        return userService.getUserProfile(user);
     }
 
     @PostMapping("/login")
-    public AuthDTO.UserDetails login(HttpServletResponse response, @Valid @RequestBody AuthDTO.UserLogin userLogin) {
+    public AuthDTO.UserProfile login(HttpServletResponse response, @Valid @RequestBody AuthDTO.UserLogin userLogin) {
         User user = userService.findUserByEmailAndPassword(userLogin.email(), userLogin.password());
         Token token = tokenService.registerToken(user);
 
         Cookie cookieToken = tokenService.getCookieToken(token.getToken());
         response.addCookie(cookieToken);
 
-        return userService.getUserDetails(user);
+        return userService.getUserProfile(user);
     }
 
     @GetMapping("/logout")
@@ -53,8 +55,25 @@ public class AuthController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
-    public AuthDTO.UserDetails me() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userService.getUserDetails(user);
+    public AuthDTO.UserProfile me() {
+        User user = userService.getUserFromContext();
+        return userService.getUserProfile(user);
+    }
+
+    @GetMapping("/me/account")
+    public AuthDTO.UserAccount getAccount() {
+        return userService.getUserAccount();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/me/account")
+    public AuthDTO.UserAccount updateAccount(@Valid @RequestBody AuthDTO.UserAccount userAccount) {
+        return userService.updateUser(userAccount);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/me/reset-password")
+    public void resetePasswordAccount(@Valid @RequestBody AuthDTO.UserResetPassword userResetPassword) {
+        userService.resetPassword(userResetPassword);
     }
 }
