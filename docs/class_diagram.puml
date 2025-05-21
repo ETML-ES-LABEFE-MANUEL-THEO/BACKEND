@@ -123,9 +123,15 @@ package ch.zucchinit.zauction {
             +securityFilterChain: SecurityFilterChain
         }
 
-        class TokenAuthenticationFilter {
+        class UserAuthTokenFilter {
             {static} authCookieName: String
             -tokenService: TokenService
+            #doFilterInternal(): void
+        }
+
+        class APIBaseTokenFilter {
+            -API_HEADER: String
+            -API_SECRET: String
             #doFilterInternal(): void
         }
     }
