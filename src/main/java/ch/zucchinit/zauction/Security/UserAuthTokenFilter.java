@@ -14,11 +14,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class TokenAuthenticationFilter extends OncePerRequestFilter {
+public class UserAuthTokenFilter extends OncePerRequestFilter {
     public static final String authCookieName = "Authorization";
     private final TokenService tokenService;
 
-    public TokenAuthenticationFilter(TokenService tokenService) {
+    public UserAuthTokenFilter(TokenService tokenService) {
         this.tokenService = tokenService;
     }
 
