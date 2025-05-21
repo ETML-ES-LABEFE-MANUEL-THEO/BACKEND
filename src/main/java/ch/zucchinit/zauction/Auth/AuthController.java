@@ -58,6 +58,7 @@ public class AuthController {
         return userService.getUserProfile(user);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me/account")
     public AuthDTO.UserAccount account() {
         return userService.getUserAccount();
