@@ -1,6 +1,6 @@
 package ch.zucchinit.zauction.Auth;
 
-import ch.zucchinit.zauction.Security.TokenAuthenticationFilter;
+import ch.zucchinit.zauction.Security.UserAuthTokenFilter;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static ch.zucchinit.zauction.Security.TokenAuthenticationFilter.authCookieName;
+import static ch.zucchinit.zauction.Security.UserAuthTokenFilter.authCookieName;
 
 @Service
 public class TokenService {
-    @Value("${token.validity.minutes}")
+    @Value("${token.user.validity}")
     public final Integer tokenMinutesValidity = 15;
     private final TokenRepository tokenRepository;
 
@@ -22,7 +22,7 @@ public class TokenService {
     }
 
     public Cookie getCookieToken(String tokenValue) {
-        Cookie cookie = new Cookie(TokenAuthenticationFilter.authCookieName, tokenValue);
+        Cookie cookie = new Cookie(UserAuthTokenFilter.authCookieName, tokenValue);
         cookie.setMaxAge(tokenMinutesValidity * 60);
         cookie.setSecure(true);
         cookie.setPath("/");
@@ -41,7 +41,7 @@ public class TokenService {
     }
 
     public Cookie deleteCookieToken() {
-        Cookie cookie = new Cookie(TokenAuthenticationFilter.authCookieName, null);
+        Cookie cookie = new Cookie(UserAuthTokenFilter.authCookieName, null);
         cookie.setMaxAge(0);
 
         return cookie;
