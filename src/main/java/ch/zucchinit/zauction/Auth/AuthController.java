@@ -3,10 +3,8 @@ package ch.zucchinit.zauction.Auth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -61,7 +59,7 @@ public class AuthController {
     }
 
     @GetMapping("/me/account")
-    public AuthDTO.UserAccount getAccount() {
+    public AuthDTO.UserAccount account() {
         return userService.getUserAccount();
     }
 
@@ -73,7 +71,7 @@ public class AuthController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/me/reset-password")
-    public void resetePasswordAccount(@Valid @RequestBody AuthDTO.UserResetPassword userResetPassword) {
+    public void resetPassword(@Valid @RequestBody AuthDTO.UserResetPassword userResetPassword) {
         userService.resetPassword(userResetPassword);
     }
 }
