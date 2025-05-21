@@ -7,6 +7,10 @@ entity User {
     * email : String [Unique]
     * password : String
     * balance : Decimal
+    phone : String
+    address : String
+    city : String
+    zipCode : String
 }
 
 entity Token {

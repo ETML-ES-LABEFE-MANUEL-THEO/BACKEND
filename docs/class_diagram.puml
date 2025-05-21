@@ -8,25 +8,38 @@ package ch.zucchinit.zauction {
     "ZAuctionApplication" --> "SpringApplication"
 
     package Auth {
-        interface UserRepository<extends JARepository<User, Long>>
-        interface TokenRepository<extends JARepository<Token, Long>>
+        interface UserRepository<extends JARepository<User, Long>>{
+            findByEmail(String email): User
+            existsByEmail(String email): boolean
+        }
+        interface TokenRepository<extends JARepository<Token, Long>>{
+            deleteByExpireDateBefore(DateTime: date): void
+        }
         class AuthDTO
         class AuthController {
             -userService: UserService
             -tokenService: TokenService
-            +register(AuthDTO.UserRegister register): AuthDTO.UserDetails
-            +login(AuthDTO.UserLogin login):   AuthDTO.UserDetails
+            +register(AuthDTO.UserRegister register): AuthDTO.UserProfile
+            +login(AuthDTO.UserLogin login): AuthDTO.UserProfile
             +unregister(): void
-            +me(): AuthDTO.UserDetails
+            +me(): AuthDTO.UserProfile
+            +getAccount(): AuthDTO.UserAccount
+            +updateAccount(AuthDTO.UserAccount userAccount): AuthDTO.UserAccount
+            +resetPassword(AuthDTO.UserResetPassword userResetPassword): void
         }
         class UserService {
             -userRepository: UserRepository
-            +getUserDetails(User user): AuthDTO.UserDetails
-            +findUserByEmailAndPassword(String email, String password): AuthDTO.UserDetails
-            +createUser(AuthDTO.UserRegister register): AuthDTO.UserDetails
+            -passwordEncoder: BCryptPasswordEncoder
+            +getUserFromContext(): User
+            +getUserProfile(User user): AuthDTO.UserProfile
+            +getUserAccount(User user): AuthDTO.UserAccount
+            +findUserByEmailAndPassword(String email, String password): User
+            +createUser(AuthDTO.UserRegister register): User
+            +updateUser(AuthDTO.UserAccount userAccount): AuthDTO.UserAccount
+            +resetPassword(AuthDTO.UserResetPassword userResetPassword): void
         }
         class TokenService {
-            -tokenMinutesValidity: Integer
+            +tokenMinutesValidity: Integer
             -tokenRepository: TokenRepository
             +getCookieToken(String tokenValue): Cookie
             +extractCookieToken(Cookie[] cookies): Cookie
@@ -34,6 +47,7 @@ package ch.zucchinit.zauction {
             +registerToken(User user): void
             +findTokenById(String tokenValue): Token
             +unregisterToken(Token token): void
+            +purgeExpiredTokens(): void
         }
 
         "AuthController" --> "UserService"
@@ -92,13 +106,14 @@ package ch.zucchinit.zauction {
         exception "NotAuthorized"
         class "ExceptionsDTO" {}
         class ExceptionsAdvice {
+            +userNotAuthorizedHandler: void
             +resourceNotFoundHandler: void
             +validationErrorHandler : ExceptionsDTO
             +unknownErrorHandler: ExceptionsDTO
         }
 
         "ResourceNotFound" --> "ExceptionsAdvice"
-        "NotAuthorized" --> "NotAuthorized"
+        "NotAuthorized" --> "ExceptionsAdvice"
         "ExceptionsDTO" --> "ExceptionsAdvice"
     }
 

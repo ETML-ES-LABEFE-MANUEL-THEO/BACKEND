@@ -1,9 +1,19 @@
 @startuml
 
-class UserDetails {
+class UserProfile {
     -firstName: String
     -lastName: String
     -balance: Decimal
+}
+
+class UserAccount {
+    -firstName: String
+    -lastName: String
+    -email: String
+    -phone: String
+    -address: String
+    -city: String
+    -zipCode: String
 }
 
 class UserLogin {
@@ -16,6 +26,11 @@ class UserRegister {
     -firstName: String
     -lastName: String
     -password: String
+}
+
+class UserResetPassword {
+    -oldPassword: String
+    -newPassword: String
 }
 
 class LotPaginatedThumbnail {
