@@ -1,38 +1,59 @@
-# Payroll
+# Z-Auction
 
-This repository has been created as a learning tool for getting to grips with spring boot.
+This project is a Spring Boot backend application for our auction platform named Z-Auction. It serves as the core server-side component, handling business logic, data management with JPA, and providing RESTful APIs to support the auction functionalities.
 
-## First build
 
-After cloning this repository, run this command:
+## Prerequisites
 
-```
+- Java JDK 17 or higher
+- Maven 3.x
+- A database configured if needed (by default, an in-memory H2 database is used)
+
+
+## Installation and Running
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ETML-ES-LABEFE-MANUEL-THEO/BACKEND.git
+   cd BACKEND
+
+
+2. Run the application with Maven:
+
+   ```bash
    mvn clean spring-boot:run
-```
+   ```
 
-to retrieve the dependencies, compile and run the program for the first time.
+   This command will:
 
-```
-  [...]
-  2024-04-09T21:27:27.338+02:00  INFO 21340 --- [payroll] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-  2024-04-09T21:27:27.517+02:00  WARN 21340 --- [payroll] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be per
-  formed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-  2024-04-09T21:27:27.752+02:00  INFO 21340 --- [payroll] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
-  2024-04-09T21:27:27.760+02:00  INFO 21340 --- [payroll] [           main] ch.etmles.payroll.PayrollApplication     : Started PayrollApplication in 2.972 seconds (process running for 3.247)
-  2024-04-09T21:27:27.802+02:00  INFO 21340 --- [payroll] [           main] c.e.payroll.Repositories.LoadDatabase    : Preloading Employee{id=1, name='Bilbo Baggins', role='burglar'}
-  2024-04-09T21:27:27.803+02:00  INFO 21340 --- [payroll] [           main] c.e.payroll.Repositories.LoadDatabase    : Preloading Employee{id=2, name='Frodo Baggins', role='thief'}
-  [...]
-```
+    * Download all required dependencies
+    * Compile the project
+    * Start the embedded Tomcat server on port 8080 (configurable)
 
-## Test using http requests
 
-Got the file [project]\src\main\java\ch\etmles\payroll\Controllers\EmployeeController.java
+## Main Features
 
-Before all routes, you will find a curl sample.
+* REST API exposed via Spring REST controllers
+* Entity management with Spring Data JPA
+* Automatic data initialization on startup with dev profile (e.g., preloading lots)
+* Endpoint usage examples with compatible HTTPie/Postman json file included in docs
 
-## Backlog
 
-Read the different issues that are present. They describe the branch to be used for the starting point and the expected result.
+## Configuration
 
-[Issues](https://github.com/ETML-ES-FWBE/exam-training/issues)
+The default server port is **8080**, which can be changed in `application.properties`:
 
+  ```properties
+  server.port=8080
+  ```
+
+The data source configuration can be adapted to your environment. By default, an embedded H2 database is used.
+
+Work in progress ...
+
+
+## Useful Resources
+
+* Official Spring Boot documentation: [https://spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+* JPA tutorial: [https://spring.io/guides/gs/accessing-data-jpa/](https://spring.io/guides/gs/accessing-data-jpa/)
+* REST API guide with Spring: [https://spring.io/guides/gs/rest-service/](https://spring.io/guides/gs/rest-service/)

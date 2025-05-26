@@ -1,67 +1,81 @@
 @startuml
 
-class UserProfile {
-    -firstName: String
-    -lastName: String
-    -balance: Decimal
+package AuthDTO {
+    class UserProfile {
+        -firstName: String
+        -lastName: String
+        -balance: BigDecimal
+    }
+
+    class UserAccount {
+        -firstName: String
+        -lastName: String
+        -email: String
+        -phone: String
+        -address: String
+        -city: String
+        -zipCode: String
+    }
+
+    class UserLogin {
+        -email: String
+        -password: String
+    }
+
+    class UserRegister {
+        -email: String
+        -firstName: String
+        -lastName: String
+        -password: String
+    }
+
+    class UserResetPassword {
+        -oldPassword: String
+        -newPassword: String
+    }
 }
 
-class UserAccount {
-    -firstName: String
-    -lastName: String
-    -email: String
-    -phone: String
-    -address: String
-    -city: String
-    -zipCode: String
+package LotDTO {
+    class LotPaginatedThumbnail {
+        -content: LotThumbnail[]
+        -page: Integer
+        -take: Integer
+        -total: Long
+    }
+
+    class LotThumbnail {
+        -id: Long
+        -name: String
+        -location: String
+        -initial_price: BigDecimal
+        -last_price: BigDecimal
+        -thumbnail: String
+    }
+
+    class LotDetails {
+        -id: Long
+        -name: String
+        -description: String
+        -location: String
+        -initial_price: BigDecimal
+        -last_price: BigDecimal
+        -medias: String[]
+        -open_date: LocalDateTime
+        -award_date: LocalDateTime
+        -close_date: LocalDateTime
+        -category: Category[]
+        -auctions: Auction[]
+    }
 }
 
-class UserLogin {
-    -email: String
-    -password: String
-}
+package AuctionDTO {
+    class AuctionPrice {
+        -date: LocalDateTime
+        -price: BigDecimal
+    }
 
-class UserRegister {
-    -email: String
-    -firstName: String
-    -lastName: String
-    -password: String
+    class AuctionRequest {
+        -price: Decimal
+    }
 }
-
-class UserResetPassword {
-    -oldPassword: String
-    -newPassword: String
-}
-
-class LotPaginatedThumbnail {
-    -content: LotThumbnail[]
-    -page: Integer
-    -take: Integer
-    -total: Long
-}
-
-class LotThumbnail {
-    -id: Long
-    -name: String
-    -location: String
-    -initial_price: Decimal
-    -last_price: Decimal
-    -thumbnail: String
-}
-
-class LotDetails {
-    -id: Long
-    -name: String
-    -description: String
-    -location: String
-    -initial_price: Decimal
-    -last_price: Decimal
-    -medias: String[]
-    -open_date: DateTime
-    -award_date: DateTime
-    -close_date: DateTime
-    -category: Category[]
-    -auctions: Auction[]
-}
-
 @enduml

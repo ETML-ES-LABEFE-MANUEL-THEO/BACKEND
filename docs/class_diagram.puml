@@ -9,19 +9,19 @@ package ch.zucchinit.zauction {
 
     package Auth {
         interface UserRepository<extends JARepository<User, Long>>{
-            findByEmail(String email): User
+            findByEmail(String email): Optional<User>
             existsByEmail(String email): boolean
         }
         interface TokenRepository<extends JARepository<Token, Long>>{
-            deleteByExpireDateBefore(DateTime: date): void
+            deleteByExpireDateBefore(LocalDateTime: date): void
         }
         class AuthDTO
         class AuthController {
             -userService: UserService
             -tokenService: TokenService
-            +register(AuthDTO.UserRegister register): AuthDTO.UserProfile
-            +login(AuthDTO.UserLogin login): AuthDTO.UserProfile
-            +unregister(): void
+            +register(HttpServletResponse response, AuthDTO.UserRegister register): AuthDTO.UserProfile
+            +login(HttpServletResponse response, AuthDTO.UserLogin login): AuthDTO.UserProfile
+            +unregister(HttpServletResponse response): void
             +me(): AuthDTO.UserProfile
             +getAccount(): AuthDTO.UserAccount
             +updateAccount(AuthDTO.UserAccount userAccount): AuthDTO.UserAccount
@@ -52,7 +52,9 @@ package ch.zucchinit.zauction {
 
         "AuthController" --> "UserService"
         "AuthController" --> "TokenService"
+        "AuthController" --> "AuthDTO"
         "UserService" --> "UserRepository"
+        "UserService" --> "AuthDTO"
         "TokenService" --> "TokenRepository"
     }
 
@@ -82,29 +84,56 @@ package ch.zucchinit.zauction {
             -lotService: LotService
             +paginate(Integer page, Integer take, Category category, String search): LotDTO.LotPaginatedThumbnail
             +one(Long id): LotDTO.LotDetails
+            +auctionsPerPeriod(Long id, String period): AuctionDTO.AuctionPrice[]
+            +requestAuction(Long id, AuctionDTO.AuctionRequest auctionRequest: AuctionDTO.AuctionPrice
         }
         class LotService {
             -lotRepository: LotRepository
             -categoryService: CategoryService
+            -auctionService: AuctionService
             +findByPageWithCategoryAndSearch(Integer page, Integer take, Category category, String search): LotDTO.LotPaginatedThumbnail
             +findById(Long id): LotDTO.LotDetails
-            {static} isFinished() : Specification<Lot>
-            -hasCategoryId(Long id) : Specification<Lot>
-            {static} multiFieldSearch(String keyword) : Specification<Lot>
+            +getLotThumbnail(Lot lot): LotDTO.LotThumbnail
+            +getLotDetails(Lot lot): LotDTO.LotDetails
+        }
+        class LotSpecifications {
+            {static}isFinished() : Specification<Lot>
+            {static}hasCategoryId(Long id) : Specification<Lot>
+            {static}multiFieldSearch(String keyword) : Specification<Lot>
         }
 
         "LotController" --> "LotService"
+        "LotController" --> "LotDTO"
         "LotService" --> "LotRepository"
+        "LotService" --> "LotDTO"
+        "LotService" --> "LotSpecifications"
     }
+    "Lot.LotController" --> "Auction.AuctionDTO"
+    "Lot.LotService" --> "Category.CategoryService"
+    "Lot.LotService" --> "Auction.AuctionService"
 
     package Auction {
-        interface AuctionRepository<extends JARepository<Auction, Long>>
+        interface AuctionRepository<extends JARepository<Auction, Long>> {
+            findByLotAndDateAfterOrderByDateDesc(Lot lot, LocalDateTime date): Auction[]
+            existsAuctionByLotAndPriceGreaterThanEqual(Lot lot, BigDecimal price): boolean
+        }
+        class AuctionDTO
+        class AuctionService {
+            -auctionRepository: AuctionRepository
+            -getAuctionPrice(Auction auction): AuctionDTO.AuctionPrice
+            +createAuction(Lot lot, AuctionDTO.AuctionRequest): AuctionDTO.AuctionPrice
+            +findAuctionsByPeriod(Lot lot, AuctionDTO.TimePeriod period): AuctionDTO.AuctionPrice[]
+            -getPeriodKey(AuctionDTO.TimePeriod timePeriod): LocalDateTime
+        }
+
+        "AuctionService" --> "AuctionRepository"
+        "AuctionService" --> "AuctionDTO"
    }
 
     package Exceptions {
         exception "ResourceNotFound"
         exception "NotAuthorized"
-        class "ExceptionsDTO" {}
+        class "ExceptionsDTO"
         class ExceptionsAdvice {
             +userNotAuthorizedHandler: void
             +resourceNotFoundHandler: void
@@ -112,9 +141,9 @@ package ch.zucchinit.zauction {
             +unknownErrorHandler: ExceptionsDTO
         }
 
-        "ResourceNotFound" --> "ExceptionsAdvice"
-        "NotAuthorized" --> "ExceptionsAdvice"
-        "ExceptionsDTO" --> "ExceptionsAdvice"
+        "ExceptionsAdvice" --> "ResourceNotFound"
+        "ExceptionsAdvice" --> "NotAuthorized"
+        "ExceptionsAdvice" --> "ExceptionsDTO"
     }
 
     package Security {
@@ -134,14 +163,26 @@ package ch.zucchinit.zauction {
             -API_SECRET: String
             #doFilterInternal(): void
         }
-    }
 
-    class S3Connector {
-        -s3client: s3Client
-        +uploadMedias(Long id)
-        +getUrls(Long id): String[]
+        "SecurityConfig" --> "UserAuthTokenFilter"
+        "SecurityConfig" --> "APIBaseTokenFilter"
     }
-    "LotService" --> "S3Connector"
+    "Security.UserAuthTokenFilter" --> "Auth.TokenService"
+
+    package Utils {
+        class FieldUpdater {
+            {static}updateIfChanged<T>(Supplier<T> getter, Consumer<T> setter, T value): void
+        }
+
+        class S3Connector {
+            -s3client: s3Client
+            +uploadMedias(Long id)
+            +getUrls(Long id): String[]
+        }
+        note top: not used yet
+    }
+    "Auth.UserService" --> "Utils.FieldUpdater"
+    "Lot.LotService" --> "Utils.S3Connector"
 }
 
 @enduml
