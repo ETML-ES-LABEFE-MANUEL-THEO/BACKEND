@@ -41,7 +41,6 @@ public class AuthDTO {
 
         @NotNull(message = "L'email est obligatoire")
         @Email(message = "Le format de l'email est invalide")
-        @CustomUserValidators.EmailUnique
         String email,
 
         @NotNull(message = "Le mot de passe est obligatoire")

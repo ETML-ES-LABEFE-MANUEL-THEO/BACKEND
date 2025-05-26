@@ -1,5 +1,8 @@
 package ch.zucchinit.zauction.Lot;
 
+import ch.zucchinit.zauction.Auction.AuctionDTO;
+import ch.zucchinit.zauction.Auction.AuctionService;
+import ch.zucchinit.zauction.Category.Category;
 import ch.zucchinit.zauction.Category.CategoryService;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import org.springframework.data.domain.Page;
@@ -10,19 +13,49 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static ch.zucchinit.zauction.Lot.LotSpecifications.*;
+
 @Service
 public class LotService {
-
     private final LotRepository lotRepository;
     private final CategoryService categoryService;
+    private final AuctionService auctionService;
 
-    public LotService(LotRepository lotRepository, CategoryService categoryRepository) {
+    public LotService(LotRepository lotRepository, CategoryService categoryRepository, AuctionService auctionService) {
         this.lotRepository = lotRepository;
         this.categoryService = categoryRepository;
+        this.auctionService = auctionService;
     }
 
-    public LotDTO.LotDetails findById(Long id) {
-        Lot lot = this.lotRepository.findById(id).orElseThrow(ResourceNotFound::new);
+    public Lot findById(Long id) {
+        return this.lotRepository.findById(id).orElseThrow(ResourceNotFound::new);
+    }
+
+    public LotDTO.LotPaginatedThumbnail findByPageWithCategoryAndSearch(Integer page, Integer take, Long categoryId, String search) {
+        Specification<Lot> spec = Specification.where(hasCategoryId(categoryService, categoryId)).and(multiFieldSearch(search)).and(isFinished());
+        Pageable pageable = PageRequest.of(page, take);
+
+        Page<Lot> lots = this.lotRepository.findAll(spec, pageable);
+        LotDTO.LotThumbnail[] thumbnails = lots.getContent().stream().map(this::getLotThumbnail).toArray(LotDTO.LotThumbnail[]::new);
+
+        return new LotDTO.LotPaginatedThumbnail(thumbnails, page, take, lots.getTotalElements());
+    }
+
+    public LotDTO.LotThumbnail getLotThumbnail(Lot lot) {
+        return new LotDTO.LotThumbnail(
+                lot.getId(),
+                lot.getName(),
+                lot.getLocation(),
+                lot.getInitialPrice(),
+                lot.getLastPrice(),
+                lot.getMedias().get(0)
+        );
+    }
+
+    public LotDTO.LotDetails getLotDetails(Lot lot) {
+        List<Category> categories = categoryService.getReverseCategories(lot.getCategory().getId());
+        List<AuctionDTO.AuctionPrice> auctions = auctionService.findAuctionsByPeriod(lot, AuctionDTO.TimePeriod.WEEK);
+
         return new LotDTO.LotDetails(
                 lot.getId(),
                 lot.getName(),
@@ -34,48 +67,8 @@ public class LotService {
                 lot.getOpenDate(),
                 lot.getAwardDate(),
                 lot.getCloseDate(),
-                categoryService.getReverseCategories(lot.getCategory().getId()),
-                lot.getAuctions());
-    }
-
-    static Specification<Lot> isFinished() {
-        return (root, query, cb) -> cb.isNull(root.get("awardDate"));
-    }
-
-    Specification<Lot> hasCategoryId(Long categoryId) {
-        return (root, query, cb) -> {
-            if (categoryId == null) return null;
-            else {
-                List<Long> ids = categoryService.getChildIds(categoryId, null);
-                return cb.or(
-                    cb.equal(root.get("category").get("id"), categoryId),
-                    root.get("category").get("id").in(ids)
-                );
-            }
-        };
-    }
-
-    static Specification<Lot> multiFieldSearch(String keyword) {
-        return (root, query, cb) -> {
-            if (keyword == null || keyword.isBlank()) return null;
-
-            String likePattern = "%" + keyword.toLowerCase() + "%";
-            return cb.or(
-                    cb.like(cb.lower(root.get("name")), likePattern),
-                    cb.like(cb.lower(root.get("description")), likePattern),
-                    cb.like(cb.lower(root.get("location")), likePattern),
-                    cb.like(cb.toString(root.get("id")), likePattern)
-            );
-        };
-    }
-
-    public LotDTO.LotPaginatedThumbnail findByPageWithCategoryAndSearch(Integer page, Integer take, Long categoryId, String search) {
-        Specification<Lot> spec = Specification.where(hasCategoryId(categoryId)).and(multiFieldSearch(search)).and(isFinished());
-        Pageable pageable = PageRequest.of(page, take);
-
-        Page<Lot> lots = this.lotRepository.findAll(spec, pageable);
-        LotDTO.LotThumbnail[] thumbnails = lots.getContent().stream().map(lot -> new LotDTO.LotThumbnail(lot.getId(), lot.getName(), lot.getLocation(), lot.getInitialPrice(), lot.getLastPrice(), lot.getMedias().get(0))).toArray(LotDTO.LotThumbnail[]::new);
-
-        return new LotDTO.LotPaginatedThumbnail(thumbnails, page, take, lots.getTotalElements());
+                categories,
+                auctions
+        );
     }
 }

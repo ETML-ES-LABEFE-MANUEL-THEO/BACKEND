@@ -1,6 +1,7 @@
 package ch.zucchinit.zauction.Lot;
 
 import ch.zucchinit.zauction.Auction.Auction;
+import ch.zucchinit.zauction.Auction.AuctionDTO;
 import ch.zucchinit.zauction.Category.Category;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -22,5 +23,5 @@ public class LotDTO {
                              LocalDateTime awardDate,
                              LocalDateTime closeDate,
                              @JsonIgnoreProperties("children") List<Category> categories,
-                             @JsonIgnoreProperties("lot") List<Auction> auctions) {}
+                             List<AuctionDTO.AuctionPrice> auctions) {}
 }

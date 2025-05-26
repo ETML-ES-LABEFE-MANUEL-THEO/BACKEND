@@ -34,6 +34,7 @@ public class User implements UserDetails {
         this.password = hashedPassword;
     }
 
+    public Long getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
@@ -51,6 +52,11 @@ public class User implements UserDetails {
     public void setAddress(String address) { this.address = address; }
     public void setCity(String city) { this.city = city; }
     public void setZipCode(String zipCode) { this.zipCode = zipCode; }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
+
+    public boolean hasSufficientBalance(BigDecimal amount) {  return this.balance.compareTo(amount) >= 0; }
+    public void increasebalance(BigDecimal amount) {  this.balance = this.balance.add(amount); }
+    public void decreasebalance(BigDecimal amount) {  this.balance = this.balance.subtract(amount); }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() { return Collections.emptyList(); }

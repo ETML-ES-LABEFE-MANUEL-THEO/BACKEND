@@ -31,7 +31,10 @@ public class LoadTestDatabase implements CommandLineRunner {
     }
 
     public void run(String... args) {
-        userRepository.save(new User("John", "Snow", "john.snow@zauction.ch", ""));
+        User user = new User("John", "Snow", "john.snow@zauction.ch", "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y");
+        user.setBalance(BigDecimal.valueOf(1_000_000_000));
+        user = userRepository.save(user);
+
 // Art & Antiquités
         Category artEtAntiquites = categoryRepository.save(new Category("Art & Antiquités", null));
 
@@ -497,10 +500,10 @@ public class LoadTestDatabase implements CommandLineRunner {
 
 
         List<Lot> allLots = lotRepository.findAll();
-        generateChronologicalAuctions(allLots, auctionRepository);
+        generateChronologicalAuctions(allLots, auctionRepository, user);
     }
 
-    public void generateChronologicalAuctions(List<Lot> lots, AuctionRepository auctionRepository) {
+    public void generateChronologicalAuctions(List<Lot> lots, AuctionRepository auctionRepository, User user) {
         Random random = new Random();
 
         for (Lot lot : lots) {
@@ -533,7 +536,7 @@ public class LoadTestDatabase implements CommandLineRunner {
                 BigDecimal increment = BigDecimal.valueOf((random.nextDouble() * 0.1 + 0.01) * basePrice.doubleValue());
                 currentPrice = currentPrice.add(increment);
 
-                Auction auction = new Auction(currentPrice, lot, auctionDate);
+                Auction auction = new Auction(currentPrice, auctionDate, lot, user);
                 auctionRepository.save(auction);
             }
         }

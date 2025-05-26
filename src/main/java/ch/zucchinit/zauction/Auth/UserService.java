@@ -1,10 +1,13 @@
 package ch.zucchinit.zauction.Auth;
 
+import ch.zucchinit.zauction.Exceptions.ExceptionsDTO;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
+import ch.zucchinit.zauction.Exceptions.ValidationError;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static ch.zucchinit.zauction.Utils.FieldUpdater.updateIfChanged;
@@ -48,6 +51,11 @@ public class UserService {
     }
 
     public User createUser(AuthDTO.UserRegister userRegister) {
+        if (userRepository.existsByEmail(userRegister.email())) {
+            ExceptionsDTO.ValidationError error = new ExceptionsDTO.ValidationError(List.of("email"), "Cet email est déjà utilisé");
+            throw new ValidationError(List.of(error));
+        }
+
         String hashedPassword = passwordEncoder.encode(userRegister.password());
 
         return userRepository.save(
