@@ -53,7 +53,7 @@ public class LotController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/auctions")
-    public AuctionDTO.AuctionPrice requestAuction(@PathVariable Long id, @Valid @RequestBody AuctionDTO.AuctionRequest auctionRequest) {
+    public AuctionDTO.AuctionResponse requestAuction(@PathVariable Long id, @Valid @RequestBody AuctionDTO.AuctionRequest auctionRequest) {
         Lot lot = lotService.findById(id);
         return auctionService.createAuction(lot, auctionRequest);
     }

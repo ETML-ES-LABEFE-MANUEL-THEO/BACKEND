@@ -15,7 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 public class UserAuthTokenFilter extends OncePerRequestFilter {
-    public static final String authCookieName = "Authorization";
     private final TokenService tokenService;
 
     public UserAuthTokenFilter(TokenService tokenService) {

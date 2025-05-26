@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import java.math.BigDecimal;
 
 public class AuthDTO {
-    public record UserProfile(String firstName, String lastName, BigDecimal balance) {}
+    public record UserProfile(String firstName, String lastName, BigDecimal balance) {
+        public UserProfile(User user) { this(user.getFirstName(), user.getLastName(), user.getAvailableBalance()); }
+    }
 
     public record UserAccount(
         @Size(min = 1, max = 30, message = "Le prénom doit contenir entre 1 et 30 caractères")
@@ -28,7 +30,11 @@ public class AuthDTO {
 
         @Size(min = 1, max = 30, message = "Le code postal doit contenir entre 1 et 30 caractères")
         String zipCode
-    ) {}
+    ) {
+        public UserAccount(User user){
+            this(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPhone(), user.getAddress(), user.getCity(), user.getZipCode());
+        }
+    }
 
     public record UserRegister(
         @NotNull(message = "Le prénom est obligatoire")

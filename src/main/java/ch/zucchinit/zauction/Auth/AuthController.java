@@ -27,7 +27,7 @@ public class AuthController {
         Cookie cookieToken = tokenService.getCookieToken(token.getToken());
         response.addCookie(cookieToken);
 
-        return userService.getUserProfile(user);
+        return new AuthDTO.UserProfile(user);
     }
 
     @PostMapping("/login")
@@ -38,7 +38,7 @@ public class AuthController {
         Cookie cookieToken = tokenService.getCookieToken(token.getToken());
         response.addCookie(cookieToken);
 
-        return userService.getUserProfile(user);
+        return new AuthDTO.UserProfile(user);
     }
 
     @GetMapping("/logout")
@@ -55,13 +55,14 @@ public class AuthController {
     @GetMapping("/me")
     public AuthDTO.UserProfile me() {
         User user = userService.getUserFromContext();
-        return userService.getUserProfile(user);
+        return new AuthDTO.UserProfile(user);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me/account")
     public AuthDTO.UserAccount account() {
-        return userService.getUserAccount();
+        User user = userService.getUserFromContext();
+        return new AuthDTO.UserAccount(user);
     }
 
     @PreAuthorize("isAuthenticated()")

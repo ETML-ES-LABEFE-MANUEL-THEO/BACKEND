@@ -23,24 +23,8 @@ public class UserService {
     }
 
     public User getUserFromContext() {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    }
-
-    public AuthDTO.UserProfile getUserProfile(User user) {
-        return new AuthDTO.UserProfile(user.getFirstName(), user.getLastName(), user.getBalance());
-    }
-
-    public AuthDTO.UserAccount getUserAccount() {
-        User user = getUserFromContext();
-        return new AuthDTO.UserAccount(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getAddress(),
-                user.getCity(),
-                user.getZipCode()
-        );
+        Long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+        return userRepository.findById(id).orElseThrow(ResourceNotFound::new);
     }
 
     public User findUserByEmailAndPassword(String email, String password) {

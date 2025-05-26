@@ -1,10 +1,12 @@
 package ch.zucchinit.zauction.Auth;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 public class Token {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private String token;
@@ -23,12 +25,7 @@ public class Token {
         this.user = user;
     }
 
-    public String getToken() { return token; }
-    public User getUser() { return user; }
-
     public boolean isValid() {
         return !expired && expireDate.isAfter(LocalDateTime.now());
     }
-
-    public void setExpired(boolean expired) { this.expired = expired; }
 }

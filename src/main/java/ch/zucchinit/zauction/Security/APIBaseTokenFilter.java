@@ -4,16 +4,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 public class APIBaseTokenFilter extends OncePerRequestFilter {
-    private final String API_HEADER = "X-API-KEY";
+    private final String API_HEADER;
     private final String API_SECRET;
 
-    public APIBaseTokenFilter(String apiSecret) {
+    public APIBaseTokenFilter(String apiHeader, String apiSecret) {
+        this.API_HEADER = apiHeader;
         this.API_SECRET = apiSecret;
     }
 

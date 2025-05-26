@@ -2,10 +2,12 @@ package ch.zucchinit.zauction.Category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
 public class Category {
 
     @Id @GeneratedValue
@@ -24,8 +26,5 @@ public class Category {
         this.parent = parent;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public List<Category> getChildren() { return children; }
     public @JsonIgnore Category getParent() { return parent; }
 }

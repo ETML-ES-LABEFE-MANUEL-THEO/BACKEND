@@ -1,29 +1,27 @@
 package ch.zucchinit.zauction.Auth;
 
-import ch.zucchinit.zauction.Security.UserAuthTokenFilter;
+import ch.zucchinit.zauction.APIConfiguration;
 import jakarta.servlet.http.Cookie;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static ch.zucchinit.zauction.Security.UserAuthTokenFilter.authCookieName;
 
 @Service
 public class TokenService {
-    @Value("${token.user.validity}")
-    public final Integer tokenMinutesValidity = 15;
+    private final APIConfiguration apiConfiguration;
     private final TokenRepository tokenRepository;
 
-    public TokenService(TokenRepository tokenRepository) {
+    public TokenService(APIConfiguration apiConfiguration, TokenRepository tokenRepository) {
+        this.apiConfiguration = apiConfiguration;
         this.tokenRepository = tokenRepository;
     }
 
     public Cookie getCookieToken(String tokenValue) {
-        Cookie cookie = new Cookie(UserAuthTokenFilter.authCookieName, tokenValue);
-        cookie.setMaxAge(tokenMinutesValidity * 60);
+        Cookie cookie = new Cookie(apiConfiguration.getCookieName(), tokenValue);
+        cookie.setMaxAge(apiConfiguration.getCookieValidity() * 60);
         cookie.setSecure(true);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -35,20 +33,20 @@ public class TokenService {
         if (cookies == null) return null;
 
         return Arrays.stream(cookies)
-                .filter(c -> c.getName().equals(authCookieName))
+                .filter(c -> c.getName().equals(apiConfiguration.getCookieName()))
                 .findFirst()
                 .orElse(null);
     }
 
     public Cookie deleteCookieToken() {
-        Cookie cookie = new Cookie(UserAuthTokenFilter.authCookieName, null);
+        Cookie cookie = new Cookie(apiConfiguration.getCookieName(), null);
         cookie.setMaxAge(0);
 
         return cookie;
     }
 
     public Token registerToken(User user) {
-        LocalDateTime expireDate = LocalDateTime.now().plusMinutes(tokenMinutesValidity);
+        LocalDateTime expireDate = LocalDateTime.now().plusMinutes(apiConfiguration.getCookieValidity());
         Token token = new Token(expireDate, user);
 
         return tokenRepository.save(token);

@@ -1,10 +1,10 @@
 package ch.zucchinit.zauction.Auction;
 
 import ch.zucchinit.zauction.Auth.User;
+import ch.zucchinit.zauction.Auth.UserService;
 import ch.zucchinit.zauction.Exceptions.ExceptionsDTO;
 import ch.zucchinit.zauction.Exceptions.ValidationError;
 import ch.zucchinit.zauction.Lot.Lot;
-import ch.zucchinit.zauction.Utils.AuthContext;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,18 +15,20 @@ import java.util.stream.Collectors;
 @Service
 public class AuctionService {
     private final AuctionRepository auctionRepository;
+    private final UserService userService;
 
-    public AuctionService(AuctionRepository auctionRepository) {
+    public AuctionService(AuctionRepository auctionRepository, UserService userService) {
         this.auctionRepository = auctionRepository;
+        this.userService = userService;
     }
 
-    public AuctionDTO.AuctionPrice createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
+    public AuctionDTO.AuctionResponse createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
         if (lot.getLastPrice().compareTo(auctionRequest.price()) >= 0) {
             ExceptionsDTO.ValidationError error = new ExceptionsDTO.ValidationError("price", "Une enchère supérieur existe", Map.of("highestPrice", lot.getLastPrice()));
             throw new ValidationError(List.of(error));
         }
 
-        User user = AuthContext.getUserFromContext();
+        User user = userService.getUserFromContext();
         BigDecimal priceDiff = lot.getAuctions().stream()
                 .filter(a -> Objects.equals(a.getUser().getId(), user.getId()))
                 .max(Comparator.comparing(Auction::getDate))
@@ -39,7 +41,7 @@ public class AuctionService {
         }
 
         Auction auction = this.auctionRepository.save(new Auction(auctionRequest.price(), LocalDateTime.now(), lot, user));
-        return getAuctionPrice(auction);
+        return new AuctionDTO.AuctionResponse(auction.getDate(), auction.getPrice(), user.getAvailableBalance());
     }
 
     public List<AuctionDTO.AuctionPrice> findAuctionsByPeriod(Lot lot, AuctionDTO.TimePeriod timePeriod){
@@ -64,20 +66,17 @@ public class AuctionService {
                 if (index >= total) index = total - 1;
 
                 Auction auction = auctions.get(index);
-                result.add(getAuctionPrice(auction));
+                result.add(new AuctionDTO.AuctionPrice(auction.getDate(), auction.getPrice()));
             }
 
             return result;
         }
     }
 
-    public AuctionDTO.AuctionPrice getAuctionPrice(Auction auction) {
-        return new AuctionDTO.AuctionPrice(auction.getDate(), auction.getPrice());
-    }
-
     private LocalDateTime getPeriodKey(AuctionDTO.TimePeriod timePeriod) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime date = switch (timePeriod) {
+            case DAY -> now;
             case WEEK -> now.minusDays(7);
             case MONTH -> now.withDayOfMonth(1);
             case QUARTER -> {

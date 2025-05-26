@@ -3,11 +3,14 @@ package ch.zucchinit.zauction.Auction;
 import ch.zucchinit.zauction.Auth.User;
 import ch.zucchinit.zauction.Lot.Lot;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
+@Data
 public class Auction {
     @Id @GeneratedValue
     private Long id;
@@ -28,9 +31,5 @@ public class Auction {
         this.user = user;
     }
 
-    public Long getId() { return id; }
-    public BigDecimal getPrice() { return price; }
-    public LocalDateTime getDate() { return date; }
-    public Lot getLot() { return lot; }
-    public User getUser() { return user; }
+    public boolean isLast() { return Objects.equals(lot.getLastAuction().id, this.id); }
 }
