@@ -10,8 +10,8 @@
   "entry": {
     "name": "ZAuction space",
     "icon": {
-      "color": "gray",
-      "name": "default"
+      "name": "default",
+      "color": "gray"
     },
     "collections": [
       {
@@ -21,7 +21,12 @@
           "color": "gray"
         },
         "auth": {
-          "type": "none"
+          "type": "apiKey",
+          "credentials": {
+            "username": "X-API-KEY",
+            "password": "{{API_TOKEN}}"
+          },
+          "target": "headers"
         },
         "requests": [
           {
@@ -193,10 +198,16 @@
             }
           },
           {
-            "name": "Lot by id",
+            "name": "Lot by id, lot 1",
             "url": "{{BASE_URL}}/lots/3",
             "method": "GET",
-            "headers": [],
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
             "queryParams": [],
             "pathParams": [],
             "auth": {
@@ -222,10 +233,16 @@
             }
           },
           {
-            "name": "Lot by inexistant id",
-            "url": "{{BASE_URL}}/lots/-1",
+            "name": "Lot by inexistant id, lot 99999",
+            "url": "{{BASE_URL}}/lots/99999",
             "method": "GET",
-            "headers": [],
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
             "queryParams": [],
             "pathParams": [],
             "auth": {
@@ -257,7 +274,7 @@
             "headers": [
               {
                 "name": "Cookie",
-                "value": "Authorization=666602b9-aa30-4355-961a-3cb5e9e753d1",
+                "value": "Authorization={{COOKIE_TOKEN}}",
                 "enabled": true
               }
             ],
@@ -301,7 +318,7 @@
                 "name": ""
               },
               "text": {
-                "value": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"Test\",\n  \"email\": \"test@test.com\",\n  \"password\": \"12345678\"\n}",
+                "value": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"Test\",\n  \"email\": \"test@test.com\",\n  \"password\": \"ABC12345678ab!\"\n}",
                 "format": "application/json"
               },
               "form": {
@@ -330,7 +347,7 @@
                 "name": ""
               },
               "text": {
-                "value": "{\n  \"email\": \"test@test.com\",\n  \"password\": \"12345678\"\n}",
+                "value": "{\n  \"email\": \"john.snow@zauction.ch\",\n  \"password\": \"ABC12345678ab!\"\n}",
                 "format": "application/json"
               },
               "form": {
@@ -350,7 +367,7 @@
             "headers": [
               {
                 "name": "Cookie",
-                "value": "Authorization=666602b9-aa30-4355-961a-3cb5e9e753d1",
+                "value": "Authorization={{COOKIE_TOKEN}}",
                 "enabled": true
               }
             ],
@@ -377,11 +394,180 @@
                 "variables": ""
               }
             }
+          },
+          {
+            "name": "Auth account",
+            "url": "{{BASE_URL}}/auth/me/account",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auth update account",
+            "url": "{{BASE_URL}}/auth/me/account",
+            "method": "PATCH",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auctions per period, lot 1",
+            "url": "{{BASE_URL}}/lots/1/auctions",
+            "method": "GET",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [
+              {
+                "name": "period",
+                "value": "",
+                "enabled": true
+              }
+            ],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "none",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
+          },
+          {
+            "name": "Auction creation, lot 1",
+            "url": "{{BASE_URL}}/lots/1/auctions",
+            "method": "POST",
+            "headers": [
+              {
+                "name": "Cookie",
+                "value": "Authorization={{COOKIE_TOKEN}}",
+                "enabled": true
+              }
+            ],
+            "queryParams": [],
+            "pathParams": [],
+            "auth": {
+              "type": "inherited"
+            },
+            "body": {
+              "type": "text",
+              "file": {
+                "name": ""
+              },
+              "text": {
+                "value": "{\n  \"price\": 1200000\n}",
+                "format": "application/json"
+              },
+              "form": {
+                "isMultipart": false,
+                "fields": []
+              },
+              "graphql": {
+                "query": "",
+                "variables": ""
+              }
+            }
           }
         ]
       }
     ],
     "environments": [
+      {
+        "name": "Defaults",
+        "color": "gray",
+        "isDefault": true,
+        "isLocalOnly": false,
+        "variables": [
+          {
+            "name": "BASE_URL",
+            "value": "",
+            "isSecret": false
+          },
+          {
+            "name": "API_TOKEN",
+            "value": "",
+            "isSecret": false
+          },
+          {
+            "name": "COOKIE_TOKEN",
+            "value": "",
+            "isSecret": false
+          }
+        ]
+      },
       {
         "name": "ZAuction",
         "color": "gray",
@@ -391,6 +577,16 @@
           {
             "name": "BASE_URL",
             "value": "http://localhost:8080",
+            "isSecret": false
+          },
+          {
+            "name": "API_TOKEN",
+            "value": "eVfMSi4Qmuh0utHbZ28IAw",
+            "isSecret": false
+          },
+          {
+            "name": "COOKIE_TOKEN",
+            "value": "f6b5a663-99aa-474d-a040-1fd4bcd8394d",
             "isSecret": false
           }
         ]
