@@ -63,12 +63,25 @@ package LotDTO {
         -open_date: LocalDateTime
         -award_date: LocalDateTime
         -close_date: LocalDateTime
+        -first_auction_date: BigDecimal
+        -last_auction_date: BigDecimal
+        -last_bidder: boolean
         -category: Category[]
         -auctions: Auction[]
     }
 }
 
 package AuctionDTO {
+    enum TimePeriod {
+        -ALL
+        -YEAR
+        -SEMESTER
+        -QUARTER
+        -MONTH
+        -WEEK
+        -DAY
+    }
+
     class AuctionPrice {
         -date: LocalDateTime
         -price: BigDecimal
@@ -76,6 +89,12 @@ package AuctionDTO {
 
     class AuctionRequest {
         -price: Decimal
+    }
+
+    class AuctionResponse {
+        -date: LocalDateTime
+        -price: BigDecimal
+        -newBalance: BigDecimal
     }
 }
 @enduml
