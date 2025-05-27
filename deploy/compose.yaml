@@ -1,0 +1,8 @@
+services:
+  spring-boot:
+    container_name: spring-boot
+    build:
+      context: ..
+      dockerfile: ./deploy/Dockerfile
+    ports:
+      - "8080:8080"
