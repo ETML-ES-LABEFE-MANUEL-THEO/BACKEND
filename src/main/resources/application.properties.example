@@ -1,8 +1,16 @@
 spring.application.name=zauction
-spring.profiles.active=
 
+### API SECURITY ###
 security.cors-origin=*
 security.api-header=X-API-KEY
 security.api-secret=mySecretApi
 security.cookie-name=Authorization
 security.cookie-validity=43200
+
+### MYSQL CONFIG ###
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://localhost:3306/zauction
+spring.datasource.username=zauction
+spring.datasource.password=secret
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=true
