@@ -41,15 +41,58 @@ This project is a Spring Boot backend application for our auction platform named
 
 ## Configuration
 
-The default server port is **8080**, which can be changed in `application.properties`:
+## Environment Variables
 
-  ```properties
-  server.port=8080
-  ```
+The application can be configured via environment variables or by editing the `application.properties` file located in `src/main/resources/`. Below are the main configuration properties:
 
-The data source configuration can be adapted to your environment. By default, an embedded H2 database is used.
+### API Security
 
-Work in progress ...
+| Property                      | Description                                     |
+|-------------------------------|-------------------------------------------------|
+| `security.cors-origin`        | Allowed CORS origins for API requests.          |
+| `security.api-header`         | HTTP header used for API key authentication.    |
+| `security.api-secret`         | Secret value for API authentication.            |
+| `security.cookie-name`        | Name of the authentication cookie.              |
+| `security.cookie-validity`    | Cookie validity duration in minutes. |
+
+### MySQL Configuration
+
+| Property                          | Description                                                |
+|------------------------------------|------------------------------------------------------------|
+| `spring.jpa.hibernate.ddl-auto`    | JPA schema management strategy.                            |
+| `spring.datasource.url`            | JDBC URL for the MySQL database.                           |
+| `spring.datasource.username`       | Database username.                                         |
+| `spring.datasource.password`       | Database password.                                         |
+| `spring.datasource.driver-class-name` | JDBC driver class name for MySQL.                          |
+| `spring.jpa.show-sql`              | Enables SQL statement logging in the console.              |
+
+> **Note:** You can override any of these properties by setting environment variables or using command-line arguments as described in the [Spring Boot documentation][1][3][4].
+
+### Example `application.properties`
+
+```properties
+# Application Name
+spring.application.name=zauction
+
+# API SECURITY
+security.cors-origin=*
+security.api-header=X-API-KEY
+security.api-secret=mySecretApi
+security.cookie-name=Authorization
+security.cookie-validity=43200
+
+# MYSQL CONFIG
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://localhost:3306/zauction
+spring.datasource.username=zauction
+spring.datasource.password=secret
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=true
+```
+
+**Remember:**
+- For production, never commit sensitive values (like passwords or secrets) to version control.
+- You can externalize configuration using environment variables or a secure configuration server[3][4].
 
 
 ## Useful Resources
