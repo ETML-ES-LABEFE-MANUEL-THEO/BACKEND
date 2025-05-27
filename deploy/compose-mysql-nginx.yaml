@@ -1,0 +1,36 @@
+services:
+  reverse-proxy:
+    container_name: spring-boot-reverse-proxy
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx-reverse-proxy.conf:/etc/nginx/nginx.conf
+
+  spring-boot:
+    container_name: spring-boot-api
+    build:
+      context: ..
+      dockerfile: ./deploy/Dockerfile
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql,security
+      - SPRING.DATASOURCE.URL=jdbc:mysql://mysql:3306/zauction
+      - SPRING.DATASOURCE.USERNAME=zauction
+      - SPRING.DATASOURCE.PASSWORD=secret
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    container_name: spring-boot-mysql
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=zauction
+      - MYSQL_USER=zauction
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=verysecret
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
