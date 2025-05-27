@@ -66,5 +66,6 @@ public class UserService {
 
         if (!passwordEncoder.matches(userResetPassword.oldPassword(), user.getPassword())) throw new ResourceNotFound();
         user.setPassword(passwordEncoder.encode(userResetPassword.newPassword()));
+        userRepository.save(user);
     }
 }

@@ -1,7 +1,10 @@
 package ch.zucchinit.zauction.Exceptions;
 
+import lombok.Getter;
+
 import java.util.List;
 
+@Getter
 public class ValidationError extends RuntimeException {
     private final List<ExceptionsDTO.ValidationError> validationErrors;
 
@@ -10,7 +13,4 @@ public class ValidationError extends RuntimeException {
         this.validationErrors = validationErrors;
     }
 
-    public List<ExceptionsDTO.ValidationError> getValidationErrors() {
-        return validationErrors;
-    }
 }

@@ -23,7 +23,8 @@ public class AuctionService {
     }
 
     public AuctionDTO.AuctionResponse createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
-        if (lot.getLastPrice().compareTo(auctionRequest.price()) >= 0) {
+        BigDecimal lastPrice = lot.getLastPrice();
+        if (lastPrice.compareTo(auctionRequest.price()) >= 0) {
             ExceptionsDTO.ValidationError error = new ExceptionsDTO.ValidationError("price", "Une enchère supérieur existe", Map.of("highestPrice", lot.getLastPrice()));
             throw new ValidationError(List.of(error));
         }

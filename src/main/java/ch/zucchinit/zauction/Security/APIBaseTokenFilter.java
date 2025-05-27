@@ -17,9 +17,8 @@ public class APIBaseTokenFilter extends OncePerRequestFilter {
         this.API_SECRET = apiSecret;
     }
 
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
 
         String apiKey = request.getHeader(API_HEADER);
 
