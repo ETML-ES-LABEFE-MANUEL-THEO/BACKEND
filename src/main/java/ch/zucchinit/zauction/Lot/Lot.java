@@ -3,13 +3,15 @@ package ch.zucchinit.zauction.Lot;
 import ch.zucchinit.zauction.Auction.Auction;
 import ch.zucchinit.zauction.Category.Category;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
+@Data
 public class Lot {
 
     @Id @GeneratedValue
@@ -21,6 +23,7 @@ public class Lot {
     private LocalDateTime openDate;
     private LocalDateTime awardDate;
     private LocalDateTime closeDate;
+
     @ElementCollection
     private List<String> medias;
 
@@ -41,19 +44,10 @@ public class Lot {
         this.openDate = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getDescription() { return description; }
-    public String getLocation() { return location; }
-    public BigDecimal getInitialPrice() { return initialPrice; }
-    public BigDecimal getLastPrice() { return auctions.stream().map(Auction::getPrice).max(BigDecimal::compareTo).orElse(initialPrice); }
-    public LocalDateTime getOpenDate() { return openDate; }
-    public LocalDateTime getAwardDate() { return awardDate; }
-    public LocalDateTime getCloseDate() { return closeDate; }
-    public List<String> getMedias() { return medias; }
-    public Category getCategory() { return category; }
-    public List<Auction> getAuctions() {
-        return auctions.stream().sorted((a, b) -> Math.toIntExact(b.getId() - a.getId())
-        ).collect(Collectors.toList());
+    public Auction getFirstAuction() { return auctions.stream().min(Comparator.comparing(Auction::getDate)).orElse(null); }
+    public Auction getLastAuction() { return auctions.stream().max(Comparator.comparing(Auction::getDate)).orElse(null); }
+    public BigDecimal getLastPrice() {
+        Auction lastAuction = getLastAuction();
+        return lastAuction != null ? lastAuction.getPrice() : initialPrice;
     }
 }

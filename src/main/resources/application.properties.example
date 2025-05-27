@@ -3,6 +3,6 @@ spring.profiles.active=
 
 security.cors-origin=*
 security.api-header=X-API-KEY
-security.api-secret=eVfMSi4Qmuh0utHbZ28IAw
+security.api-secret=mySecretApi
 security.cookie-name=Authorization
 security.cookie-validity=43200
