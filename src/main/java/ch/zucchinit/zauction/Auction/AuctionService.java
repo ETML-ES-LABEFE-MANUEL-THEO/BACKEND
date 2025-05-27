@@ -41,7 +41,7 @@ public class AuctionService {
         }
 
         Auction auction = this.auctionRepository.save(new Auction(auctionRequest.price(), LocalDateTime.now(), lot, user));
-        return new AuctionDTO.AuctionResponse(auction.getDate(), auction.getPrice(), user.getAvailableBalance());
+        return new AuctionDTO.AuctionResponse(auction.getDate(), auction.getPrice(), user.getAvailableBalance().subtract(priceDiff));
     }
 
     public List<AuctionDTO.AuctionPrice> findAuctionsByPeriod(Lot lot, AuctionDTO.TimePeriod timePeriod){
