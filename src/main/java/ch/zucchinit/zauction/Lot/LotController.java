@@ -6,7 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,9 +78,11 @@ public class LotController {
             @RequestPart(name = "mediasMeta", required = false) List<LotDTO.LotMediaAction> metas,
             @RequestPart(name = "medias", required = false) List<MultipartFile> files)
     {
+        Lot lot = lotService.findById(id);
+        if (lot.getPublishDate().isBefore(LocalDateTime.now())) throw new ResponseStatusException(HttpStatus.CONFLICT);
+
         try {
-            Lot lot = lotService.updateLot(id, lotModification, metas, files);
-            return lotService.getLotDetails(lot);
+            return lotService.getLotDetails(lotService.updateLot(lot, lotModification, metas, files));
         } catch (Exception e) {
             throw new GenericError(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la modification du lot");
         }

@@ -117,11 +117,10 @@ public class LotService {
     }
 
     @Transactional
-    public Lot updateLot(Long id, LotDTO.LotModification lotModification,
+    public Lot updateLot(Lot lot, LotDTO.LotModification lotModification,
                          List<LotDTO.LotMediaAction> metas,
                          List<MultipartFile> medias) throws IOException
     {
-        Lot lot = findById(id);
         userService.restrictUser(lot.getSellerUser());
 
         if (lotModification.categoryId() != null && !Objects.equals(lot.getCategory().getId(), lotModification.categoryId())) {
