@@ -17,10 +17,10 @@ public class LotSpecifications {
         return (root, query, cb) -> {
             query.distinct(true);
             query.orderBy(
+                    cb.desc(root.get("creationDate")),
                     cb.desc(root.get("transferDate")),
                     cb.desc(root.get("closeDate")),
-                    cb.desc(root.get("publishDate")),
-                    cb.desc(root.get("creationDate"))
+                    cb.desc(root.get("publishDate"))
             );
 
             return cb.conjunction();
