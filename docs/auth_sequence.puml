@@ -1,0 +1,31 @@
+@startuml
+actor Client
+participant "APIBaseTokenFilter"
+participant "UserAuthTokenFilter"
+participant "TokenService"
+participant SecurityContextHolder
+
+== Début de la requête ==
+Client -> APIBaseTokenFilter : HTTP Request (header API_HEADER)
+
+APIBaseTokenFilter -> APIBaseTokenFilter : request.getHeader(API_HEADER)
+alt apiKey != API_SECRET
+    APIBaseTokenFilter -> Client : response.setStatus(401)\nSTOP
+
+else apiKey == API_SECRET
+    APIBaseTokenFilter -> UserAuthTokenFilter : filterChain.doFilter(request, response)
+end
+
+UserAuthTokenFilter -> TokenService : extractCookieToken(request.getCookies())
+TokenService --> UserAuthTokenFilter : Cookie (ou null)
+
+alt cookieToken != null
+    UserAuthTokenFilter -> TokenService : findTokenById(cookieToken.getValue())
+    TokenService --> UserAuthTokenFilter : Token (ou null)
+    UserAuthTokenFilter --> SecurityContextHolder : Sauvegarde l'utilisateur dans le contexte
+else cookieToken == null
+    UserAuthTokenFilter -> Client : response.setStatus(401)\nSTOP
+end
+
+UserAuthTokenFilter -> Client : filterChain.doFilter(request, response) : Accès aux routes
+@enduml

@@ -34,16 +34,16 @@ entity Lot {
     * name : String
     * description : String
     * initial_price : Decimal
+    * last_price: Decimal
     * location : String
     * creation_date: DateTime
-    open_date : DateTime
-    award_date : DateTime
+    publish_ate : DateTime
     close_date : DateTime
+    transfer_date : DateTime
     * category_id : Integer [FK]
-    * seller_id: Integer[FK]
-    * buyer_id: Integer[FK]
+    * seller_user_id: Integer[FK]
+    * buyer_user_id: Integer[FK]
 }
-note top: creation_date, open_date, award_date and close_date will change and may not be used yet
 Lot ||-- Category : classified by
 Lot ||-- User : selled by
 Lot ||-- User : buyed by

@@ -1,0 +1,91 @@
+@startuml
+
+package ch.zucchinit.zauction {
+    class SpringApplication
+    ZAuctionApplication --> SpringApplication
+
+    class ZAuctionApplication {
+        +main(String[]): void
+    }
+
+    package Configurations {
+        class APIConfiguration {
+            -corsOrigin: String
+            -apiHeader: String[]
+            -apiSecret: String
+            -cookieName: String
+            -cookieValidity: Integer
+        }
+
+        class S3Configuration {
+            -bucket: String
+            -region: String
+            -accessKey: String
+            -secretKey: String
+        }
+
+        class SwaggerConfiguration {
+            +getOpenApi(): OpenAPI
+        }
+    }
+
+    package Security {
+        class SecurityConfig {
+            -apiConfiguration: APIConfiguration
+            -corsConfigurationSource: CorsConfigurationSource
+            +noAuthSecurityFilterChain: SecurityFilterChain
+            +authSecurityFilterChain: SecurityFilterChain
+        }
+
+        class UserAuthTokenFilter {
+            -tokenService: TokenService
+            #doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain): void
+        }
+
+        class APIBaseTokenFilter {
+            -API_HEADER: String
+            -API_SECRET: String
+            #doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain): void
+        }
+
+        SecurityConfig --> UserAuthTokenFilter
+        SecurityConfig --> APIBaseTokenFilter
+        SecurityConfig --> APIConfiguration
+        UserAuthTokenFilter --> TokenService
+    }
+
+    package Utils {
+        class FieldUpdater {
+            {static}updateIfChanged<T>(Supplier<T> getter, Consumer<T> setter, T value): void
+        }
+        class S3Connector {
+            -s3Configuration: S3Configuration
+            -provider: StaticCredentialsProvider
+            +getS3Client(): S3Client
+            +getFileExtension(String filename): String
+            +uploadFiles(Map<String, byte[]> files): String[]
+            +deleteFiles(String[] files)
+        }
+
+        S3Connector --> S3Configuration
+    }
+
+    package Exceptions {
+        exception ResourceNotFound
+        exception NotAuthorized
+        class ExceptionsDTO
+        class ExceptionsAdvice {
+            +userNotAuthorizedHandler(): void
+            +resourceNotFoundHandler(): void
+            +validationErrorHandler(ValidationError ex): ExceptionsDTO.ValidationError[]
+            +springValidationErrorHandler(MethodArgumentNotValidException ex): ExceptionsDTO.ValidationError[]
+            +handleMissingServletRequestParameter(MissingServletRequestParameterException ex): ExceptionsDTO.ValidationError[]
+        }
+
+        ExceptionsAdvice --> ResourceNotFound
+        ExceptionsAdvice --> NotAuthorized
+        ExceptionsAdvice --> ExceptionsDTO
+        ExceptionsAdvice --> ExceptionsDTO.ValidationError
+    }
+}
+@enduml

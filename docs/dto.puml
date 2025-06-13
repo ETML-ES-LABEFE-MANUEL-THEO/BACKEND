@@ -2,19 +2,19 @@
 
 package AuthDTO {
     class UserProfile {
-        -firstName: String
-        -lastName: String
-        -balance: BigDecimal
+        -first_name: String
+        -last_name: String
+        -balance: Decimal
     }
 
     class UserAccount {
-        -firstName: String
-        -lastName: String
+        -first_name: String
+        -last_name: String
         -email: String
         -phone: String
         -address: String
         -city: String
-        -zipCode: String
+        -zip_code: String
     }
 
     class UserLogin {
@@ -24,31 +24,39 @@ package AuthDTO {
 
     class UserRegister {
         -email: String
-        -firstName: String
-        -lastName: String
+        -first_name: String
+        -last_name: String
         -password: String
     }
 
     class UserResetPassword {
-        -oldPassword: String
-        -newPassword: String
+        -old_password: String
+        -new_password: String
     }
 }
 
 package LotDTO {
-    class LotPaginatedThumbnail {
-        -content: LotThumbnail[]
+    class PaginatedLot<T> {
+        -content: T[]
         -page: Integer
         -take: Integer
         -total: Long
+        -details: Map<String, Object>
+    }
+
+    class LotFilter {
+        -category_id: Integer
+        -search: String
+        -min_price: Decimal
+        -max_price: Decimal
     }
 
     class LotThumbnail {
         -id: Long
         -name: String
         -location: String
-        -initial_price: BigDecimal
-        -last_price: BigDecimal
+        -initial_price: Decimal
+        -last_price: Decimal
         -thumbnail: String
     }
 
@@ -57,17 +65,62 @@ package LotDTO {
         -name: String
         -description: String
         -location: String
-        -initial_price: BigDecimal
-        -last_price: BigDecimal
+        -initial_price: Decimal
+        -last_price: Decimal
         -medias: String[]
-        -open_date: LocalDateTime
-        -award_date: LocalDateTime
-        -close_date: LocalDateTime
-        -first_auction_date: BigDecimal
-        -last_auction_date: BigDecimal
-        -last_bidder: boolean
+        -publish_date: DateTime
+        -close_date: DateTime
+        -transfer_date: DateTime
+        -first_auction_date: Decimal
+        -last_auction_date: Decimal
+        -is_last_bidder: boolean
+        -is_seller: boolean
         -category: Category[]
         -auctions: Auction[]
+    }
+
+    class LotHistory {
+        -id: Long
+        -name: String
+        -short_desc: String
+        -location: String
+        -initial_price: Decimal
+        -last_price: Decimal
+        -thumbnail: String
+        -publish_date: DateTime
+        -close_date: DateTime
+        -transfer_date: DateTime
+        -is_last_bidder: boolean
+    }
+
+    class LotCreation {
+        -name: String
+        -description: String
+        -location: String
+        -initial_price: Decimal
+        -publish_date: DateTime
+        -close_date: DateTime
+        -category_id: Integer
+    }
+
+    class LotMediaAction {
+        -action: String
+        -from: Integer
+        -to: Integer
+    }
+
+    class LotModification {
+        -name: String
+        -description: String
+        -location: String
+        -initial_price: Decimal
+        -publish_date: DateTime
+        -close_date: DateTime
+        -category_id: Integer
+    }
+
+    class LotTransferResult {
+        new_balance: Decimal
     }
 }
 
