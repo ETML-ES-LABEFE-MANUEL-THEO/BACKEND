@@ -12,7 +12,7 @@ public class Category {
 
     @Id @GeneratedValue
     private Long id;
-    private String name;
+    private @Column(nullable = false) String name;
 
     @ManyToOne @JoinColumn(name = "parent_id")
     private Category parent;

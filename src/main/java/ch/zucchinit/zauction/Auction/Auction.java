@@ -14,13 +14,13 @@ import java.util.Objects;
 public class Auction {
     @Id @GeneratedValue
     private Long id;
-    private BigDecimal price;
-    private LocalDateTime date;
+    private @Column(nullable = false) BigDecimal price;
+    private @Column(nullable = false) LocalDateTime date;
 
-    @ManyToOne @JoinColumn(name = "lot_id")
+    @ManyToOne @JoinColumn(name = "lot_id", nullable = false)
     private Lot lot;
 
-    @ManyToOne @JoinColumn(name = "user_id")
+    @ManyToOne @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Auction() {}
@@ -31,5 +31,5 @@ public class Auction {
         this.user = user;
     }
 
-    public boolean isLast() { return Objects.equals(lot.getLastAuction().id, this.id); }
+    public boolean isLast() { return Objects.equals(lot.getLastAuction().map(Auction::getId).orElse(null), this.id); }
 }

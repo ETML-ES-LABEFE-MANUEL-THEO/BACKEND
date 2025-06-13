@@ -3,9 +3,12 @@ package ch.zucchinit.zauction.Auction;
 import ch.zucchinit.zauction.Auth.User;
 import ch.zucchinit.zauction.Auth.UserService;
 import ch.zucchinit.zauction.Exceptions.ExceptionsDTO;
+import ch.zucchinit.zauction.Exceptions.GenericError;
 import ch.zucchinit.zauction.Exceptions.ValidationError;
 import ch.zucchinit.zauction.Lot.Lot;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,6 +26,10 @@ public class AuctionService {
     }
 
     public AuctionDTO.AuctionResponse createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
+        if (userService.isSameUser(lot.getSellerUser())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if (lot.getPublishDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
+        if (lot.getCloseDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est clôturé");
+
         BigDecimal lastPrice = lot.getLastPrice();
         if (lastPrice.compareTo(auctionRequest.price()) >= 0) {
             ExceptionsDTO.ValidationError error = new ExceptionsDTO.ValidationError("price", "Une enchère supérieur existe", Map.of("highestPrice", lot.getLastPrice()));
@@ -31,7 +38,7 @@ public class AuctionService {
 
         User user = userService.getUserFromContext();
         BigDecimal priceDiff = lot.getAuctions().stream()
-                .filter(a -> Objects.equals(a.getUser().getId(), user.getId()))
+                .filter(a -> a.getUser().isSame(user))
                 .max(Comparator.comparing(Auction::getDate))
                 .map(a -> auctionRequest.price().subtract(a.getPrice()))
                 .orElse(auctionRequest.price());

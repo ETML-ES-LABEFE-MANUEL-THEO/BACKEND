@@ -31,9 +31,26 @@ public class LoadTestDatabase implements CommandLineRunner {
     }
 
     public void run(String... args) {
-        User user = new User("John", "Snow", "john.snow@zauction.ch", "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y");
-        user.setBalance(BigDecimal.valueOf(1_000_000_000));
-        user = userRepository.save(user);
+        User jonSnow = userRepository.save(new User(
+                "Jon",
+                "Snow",
+                "jon.snow@zauction.ch",
+                "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
+        ));
+
+        User nedStark = userRepository.save(new User(
+                "Ned",
+                "Stark",
+                "ned.stark@zauction.ch",
+                "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
+        ));
+
+        User daenerysTargaryen = userRepository.save(new User(
+                "Daenerys",
+                "Targaryen",
+                "daenerys.targaryen@zauction.ch",
+                "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
+        ));
 
         Category artEtAntiquites = categoryRepository.save(new Category("Art & Antiquités", null));
         Category peintures = categoryRepository.save(new Category("Peintures", artEtAntiquites));
@@ -121,14 +138,15 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Paris",
                 BigDecimal.valueOf(4500),
                 List.of(
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-main-671a81e24e448.jpg",
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-671a81f88ad8f.jpg",
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-671a81f8ade1b.jpg",
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-alb-671a820c35c74.jpg",
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-alb-671a820ccf555.jpg",
-                        "https://www.proantic.com/galerie/daniel-et-vincent/img/1424421-alb-671a820d0876a.jpg"
+                        "1_761b8d44-0bbc-46a3-806e-bdaa131d9aea.jpg",
+                        "1_5d5dbdf7-84de-4a0e-8d99-2d1fdab57dd9.jpg",
+                        "1_2956fe82-9a60-4cc6-b79b-f090ae371544.jpg",
+                        "1_890a75a9-319b-4a10-8479-9420d736e9fa.jpg",
+                        "1_fa2d5641-9f79-4326-bd3e-758920ba3c67.jpg",
+                        "1_8841cb76-8db7-443c-9ba3-65ba3d630b9a.jpg"
                 ),
-                maitresAnciens
+                maitresAnciens,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -137,14 +155,15 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Genève",
                 BigDecimal.valueOf(1850),
                 List.of(
-                        "https://img.chrono24.com/images/uhren/38322805-g3n2lp57t5qvq44z7bxv6jwq-Zoom.jpg",
-                        "https://img.chrono24.com/images/uhren/38322805-mh3273neav0utpt3m24jqiko-ExtraLarge.jpg",
-                        "https://img.chrono24.com/images/uhren/38322805-b6i3qzlqz9wiwtwvdpbdimx5-Zoom.jpg",
-                        "https://img.chrono24.com/images/uhren/38322805-eb9e2jbrelbjxocznmg8ole9-Zoom.jpg",
-                        "https://img.chrono24.com/images/uhren/38322805-ng7ren1k9nmkpatalfca86u4-Zoom.jpg",
-                        "https://img.chrono24.com/images/uhren/38322805-omxzoqutszm4v43l1yl7txeb-Zoom.jpg"
+                        "2_f2510e60-8191-460e-b812-8551e9644538.jpg",
+                        "2_18739827-f7d5-4da3-a0bb-1213996828d1.jpg",
+                        "2_72ab712d-9221-4b9d-88e2-1667e3f013ce.jpg",
+                        "2_93b4847b-d0bb-418f-a221-5cafc6c4f452.jpg",
+                        "2_3cc1924b-b251-4b4f-a461-65b974568288.jpg",
+                        "2_6fe99ff3-fd3d-47d0-bd7c-b30e296806ea.jpg"
                 ),
-                montresVintage
+                montresVintage,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -153,13 +172,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Bruxelles",
                 BigDecimal.valueOf(2200),
                 List.of(
-                        "https://cdn.rugvista.net/products/main/543724.jpg?width=2400&quality=75&format=auto",
-                        "https://cdn.rugvista.net/products/detail/2029629.jpg?width=2400&quality=75&format=auto",
-                        "https://cdn.rugvista.net/products/detail/2029626.jpg?width=2400&quality=75&format=auto ",
-                        "https://cdn.rugvista.net/products/detail/2029624.jpg?width=2400&quality=75&format=auto",
-                        "https://cdn.rugvista.net/products/detail/2029622.jpg?width=384&quality=75&format=auto"
+                        "3_73eeb684-2e51-4b4a-88cb-acf58a1e47dd.jpg",
+                        "3_4a92a71f-859a-40cf-bd05-89bb83de1e8f.jpg",
+                        "3_3959b146-e1f5-4a0b-879f-4ebe880ff5f8.jpg",
+                        "3_15bdfe8a-b6d8-4e36-92b2-45dc4a6e144c.jpg",
+                        "3_0b7b6c21-faff-4248-b29a-556b05a413cf.jpg"
                 ),
-                tapis
+                tapis,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -168,13 +188,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Monaco",
                 BigDecimal.valueOf(7500),
                 List.of(
-                        "https://www.artcurial.com/item-images/860922/PICTURE_CATALOG/002.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/860923/PICTURE_CATALOG/003.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/860924/PICTURE_CATALOG/001.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/860925/PICTURE_CATALOG/004.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/860926/PICTURE_CATALOG/005.jpg?w=700&force_webp=true"
+                        "4_7f2f3cdb-3485-4257-a4b7-fd18176dd770.webp",
+                        "4_1caed680-248e-4f40-b632-56ada9206528.webp",
+                        "4_6e891750-7b53-4011-bd36-083afdef0449.webp",
+                        "4_1a8ef33f-028a-4d66-baec-60bc12a98f50.webp",
+                        "4_6f6232f7-5b0a-40d5-b84d-5e9d5f9a894c.webp"
                 ),
-                casques
+                casques,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -183,11 +204,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Lyon",
                 BigDecimal.valueOf(9800),
                 List.of(
-                        "https://www.77diamonds.com/image/57159/photo/white-gold/round/big/-/-/-/-/delicacy-vintage?v=20210629083403640",
-                        "https://www.77diamonds.com/image/57162/photo/white-gold/round/big/-/-/-/-/delicacy-vintage?v=20210629083403670",
-                        "https://www.77diamonds.com/image/57165/photo/white-gold/round/big/-/-/-/-/delicacy-vintage?v=20210629083403700"
+                        "5_bbe3ec77-218a-4975-b1ef-2ccb2c64409d.jpg",
+                        "5_1cb22591-f16a-4ed3-8744-0147c6a70798.jpg",
+                        "5_1afa2000-d482-42aa-bc52-45aef515eeee.jpg"
                 ),
-                diamants
+                diamants,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -196,11 +218,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Lille",
                 BigDecimal.valueOf(3200),
                 List.of(
-                        "https://i.ebayimg.com/images/g/MMoAAOSwjX5nkf28/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/Pb4AAOSwe9Jnkf2~/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/gIgAAOSwD59nkf2~/s-l1600.webp"
+                        "6_d0b86164-9192-4df0-9c56-4ff491352e6d.webp",
+                        "6_4347facd-7df6-4734-bc48-a590d8dc4215.webp",
+                        "6_f2be7a43-9996-4330-851b-e6d3536bf600.webp"
                 ),
-                bronze
+                bronze,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -209,14 +232,15 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Bruxelles",
                 BigDecimal.valueOf(850),
                 List.of(
-                        "https://www.art-africain.co/contents/media/l_15938-statuette-fetiche-africain-fang-270724.jpg?lmd=29117360",
-                        "https://www.art-africain.co/contents/media/l_15939-statuette-fetiche-africain-fang-270724.jpg?lmd=29117361",
-                        "https://www.art-africain.co/contents/media/l_15940-statuette-fetiche-africain-fang-270724.jpg?lmd=29117361",
-                        "https://www.art-africain.co/contents/media/l_15942-statuette-fetiche-africain-fang-270724.jpg?lmd=29117361",
-                        "https://www.art-africain.co/contents/media/l_15943-statuette-fetiche-africain-fang-270724.jpg?lmd=29117361",
-                        "https://www.art-africain.co/contents/media/l_15945--statuette-fetiche-africain-fang-270724.jpg?lmd=29117361"
+                        "7_b267d2c5-58d3-4b5b-8817-12289b5d737b.jpg",
+                        "7_830b23ad-16d8-402d-ad9f-fb9267f87c5b.jpg",
+                        "7_249e6cb6-bd71-44c4-b414-cb5389c2de0c.jpg",
+                        "7_ef5e69be-9eef-4a49-b5b2-63839e242e79.jpg",
+                        "7_b481c360-cb54-41c9-a07f-a029ca6d4c9a.jpg",
+                        "7_efa5a70e-eae1-451e-93b6-6ffbb2ffbf8c.jpg"
                 ),
-                bois
+                bois,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -225,15 +249,16 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Toulouse",
                 BigDecimal.valueOf(1700),
                 List.of(
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-main-681dbc2ea1fef.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-681dbc5734c3b.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-681dbc573e08a.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-681dbc5742fae.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-alb-681dbc775ca9b.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-alb-681dbc7769140.jpg",
-                        "https://www.proantic.com/galerie/mastromauro/img/1543963-alb-681dbc7770d1d.jpg"
+                        "8_ba1593e9-8579-49c2-a1a4-bd9f0c6bad42.jpg",
+                        "8_6f3dd766-2a83-4624-9796-d73d4de0a999.jpg",
+                        "8_45daef7c-8c17-480b-92a6-8672d72db30f.jpg",
+                        "8_13b7f318-45be-4c1a-8568-cb954e7e555e.jpg",
+                        "8_c474c727-8293-4a3f-b42b-49364296cc21.jpg",
+                        "8_b5851c8c-c8ff-4008-9b92-7fc83c73da5e.jpg",
+                        "8_14180986-f90a-4859-be9d-b1823a304671.jpg"
                 ),
-                ivoires
+                ivoires,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -242,15 +267,16 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Anvers",
                 BigDecimal.valueOf(600),
                 List.of(
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-main-67a25836e4d29.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-67a2588cafd5b.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-67a258b3bfbf9.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-67a258d5ae053.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-alb-67a2590111b22.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-alb-67a2590137402.jpg",
-                        "https://www.proantic.com/galerie/annebesnard/img/1484506-alb-67a25926cf015.jpg"
+                        "9_dc7a22c0-ebc8-40fe-b2a8-555b854cb467.jpg",
+                        "9_49c6f356-8585-43e4-b783-80bbfd0e8eee.jpg",
+                        "9_bdaf5c3a-7407-4e68-a6b3-afdac5c94fcf.jpg",
+                        "9_30f5b2a8-735c-4663-b707-f4a4659957cc.jpg",
+                        "9_495db86c-dd49-4bf3-a0df-26ee7d579a3f.jpg",
+                        "9_77e4f672-4ba5-4eff-8b90-7d9c02ca5aa1.jpg",
+                        "9_139667b2-f25f-432b-a4a8-8f65d8d9ceae.jpg"
                 ),
-                ceramiques
+                ceramiques,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -259,13 +285,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Madrid",
                 BigDecimal.valueOf(5400),
                 List.of(
-                        "https://collections.louvre.fr/media/cache/original/0000000021/0000098683/0000176803_OG.JPG",
-                        "https://collections.louvre.fr/media/cache/original/0000000021/0000098683/0000176798_OG.JPG",
-                        "https://collections.louvre.fr/media/cache/original/0000000021/0000098683/0000176796_OG.JPG",
-                        "https://collections.louvre.fr/media/cache/original/0000000021/0000098683/0000176794_OG.JPG",
-                        "https://collections.louvre.fr/media/cache/original/0000000021/0000098683/0000176800_OG.JPG"
+                        "10_326e12d3-28e8-496a-bfbe-d522f7c7377e.jpg",
+                        "10_4ad8ec19-6dce-480a-90fd-fd221a407431.jpg",
+                        "10_07f1a0fb-ca16-4486-bdb1-0730e0b987c9.jpg",
+                        "10_1421b6bb-c78a-4050-9712-cbadcf5bc1e6.jpg",
+                        "10_4f77528c-cbeb-4834-92ce-2feaa1f7fa85.jpg"
                 ),
-                objetsReligieux
+                objetsReligieux,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -274,11 +301,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Londres",
                 BigDecimal.valueOf(2100),
                 List.of(
-                        "https://assets.catawiki.com/image/cw_ldp_l/plain/assets/catawiki/assets/2025/2/17/a/e/7/ae7efff3-2efa-4cf2-ade8-84100a2dbdef.jpg@webp",
-                        "https://assets.catawiki.com/image/cw_ldp_l/plain/assets/catawiki/assets/2025/2/17/1/d/c/1dcf5816-c222-4837-bff3-ecd17170f545.jpg@webp",
-                        "https://assets.catawiki.com/image/cw_ldp_l/plain/assets/catawiki/assets/2025/2/17/d/9/3/d938c285-3e45-4ab1-8992-1035d655d1c3.jpg@webp"
+                        "11_9e3922c3-cb81-4aca-9806-abd81dde2320.webp",
+                        "11_699c58a5-31c1-4a4e-97d0-ab501403bdea.webp",
+                        "11_b486dff9-3fa4-4a76-8f21-6f6e29b8b9f7.webp"
                 ),
-                egyptiennes
+                egyptiennes,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -287,13 +315,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Genève",
                 BigDecimal.valueOf(1200),
                 List.of(
-                        "https://a.1stdibscdn.com/19th-century-antique-tibetan-wooden-buddhist-mahakala-mask-with-stand-for-sale/f_57302/f_310952521667297882918/f_31095252_1667297883205_bg_processed.jpg?disable=upscale&auto=webp&quality=60&width=1400",
-                        "https://a.1stdibscdn.com/19th-century-antique-tibetan-wooden-buddhist-mahakala-mask-with-stand-for-sale-picture-2/f_57302/f_310952521667297958655/DSC_3285_master.JPG?disable=upscale&auto=webp&quality=60&width=1400",
-                        "https://a.1stdibscdn.com/19th-century-antique-tibetan-wooden-buddhist-mahakala-mask-with-stand-for-sale-picture-4/f_57302/f_310952521667297977070/DSC_3289_master.JPG?disable=upscale&auto=webp&quality=60&width=1400",
-                        "https://a.1stdibscdn.com/19th-century-antique-tibetan-wooden-buddhist-mahakala-mask-with-stand-for-sale-picture-9/f_57302/f_310952521667298018490/DSC_3292_master.JPG?disable=upscale&auto=webp&quality=60&width=1400",
-                        "https://a.1stdibscdn.com/19th-century-antique-tibetan-wooden-buddhist-mahakala-mask-with-stand-for-sale-picture-3/f_57302/f_310952521667297968859/DSC_3288_master.JPG?disable=upscale&auto=webp&quality=60&width=1400"
+                        "12_1308fe86-c32d-47af-98c2-1d976d4a178e.jpg",
+                        "12_36a18888-0d82-47a3-ac63-c8cbdce5f7d0.jpg",
+                        "12_e5ac8ae9-f558-4c74-8a19-1df3f36e421f.jpg",
+                        "12_0ec1f80c-f111-4227-86de-96017fe33651.jpg",
+                        "12_6f10ef3c-8fc1-4112-82f5-61769cddd0cf.jpg"
                 ),
-                asiatiques
+                asiatiques,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -302,11 +331,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Rome",
                 BigDecimal.valueOf(8900),
                 List.of(
-                        "https://www.anticstore.com/DocBD/commerce/antiquaire/il-quadrifoglio-891/objet/94979/AnticStore-Large-Ref-94979_01.jpg",
-                        "https://www.anticstore.com/DocBD/commerce/antiquaire/il-quadrifoglio-891/objet/94979/AnticStore-Large-Ref-94979_03.jpg",
-                        "https://www.anticstore.com/DocBD/commerce/antiquaire/il-quadrifoglio-891/objet/94979/AnticStore-Large-Ref-94979_02.jpg"
+                        "13_35294ec9-d4eb-49e1-a36a-5ef6ab1c7e6c.jpg",
+                        "13_c8818d64-39aa-4771-9ba5-3ac20d5aed2c.jpg",
+                        "13_b0cafc7d-71b9-4af2-afdb-f21d85437b9f.jpg"
                 ),
-                grecoRomaines
+                grecoRomaines,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -315,11 +345,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Nice",
                 BigDecimal.valueOf(3200),
                 List.of(
-                        "https://i.ebayimg.com/images/g/KPYAAOSwU45gwJwc/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/cEQAAOSweYdgwJwd/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/dIoAAOSwraJgwJwg/s-l1600.webp"
+                        "14_9be80ff5-0482-477f-88ed-be6f21d43e77.webp",
+                        "14_69cbce7d-50b6-4b24-bd8b-f4ab22a3121e.webp",
+                        "14_7796e050-1657-4712-a21c-51db7aac1bc8.webp"
                 ),
-                artDeco
+                artDeco,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -328,10 +359,11 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Londres",
                 BigDecimal.valueOf(2450),
                 List.of(
-                        "https://www.uhrenschmuck24.ch/media/catalog/product/img/1/image/1080x1080/c/o/collier-mit-anhaenger-750-18-k-gelbgold-mit-diamanten-0-13-ct-h-si-by-christian-1000961714-166429034982.jpg",
-                        "https://www.uhrenschmuck24.ch/media/catalog/product/img/1/image/1080x1080/c/o/collier-mit-anhaenger-750-18-k-gelbgold-mit-diamanten-0-13-ct-h-si-by-christian-1000961714-166429034994.jpg"
+                        "15_964a90cb-94b4-4bbf-ac2e-e2f41e98ac4e.jpg",
+                        "15_34620fc7-90a5-4556-86b7-c24dad5d8bf9.jpg"
                 ),
-                victorien
+                victorien,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -340,14 +372,15 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Paris",
                 BigDecimal.valueOf(6200),
                 List.of(
-                        "https://cdn20.pamono.com/p/z/1/9/1937963_6w9munjucc/louis-xv-kommode-aus-holz-1.jpg",
-                        "https://cdn20.pamono.com/p/g/1/9/1937963_828i2c2g62/louis-xv-kommode-aus-holz-2.jpg",
-                        "https://cdn20.pamono.com/p/g/1/9/1937963_ko2yl5qbsp/louis-xv-kommode-aus-holz-3.jpg",
-                        "https://cdn20.pamono.com/p/g/1/9/1937963_y3vvcoxsya/louis-xv-kommode-aus-holz-4.jpg",
-                        "https://cdn20.pamono.com/p/g/1/9/1937963_hwx2wu7wjn/louis-xv-kommode-aus-holz-5.jpg",
-                        "https://cdn20.pamono.com/p/g/1/9/1937963_ge0aagw0qr/louis-xv-kommode-aus-holz-8.jpg"
+                        "16_fe3bd541-6205-4f78-a1b2-a1bf58685fea.jpg",
+                        "16_e17adf96-9cf9-4603-aac8-60da40a9942c.jpg",
+                        "16_9a882051-2813-4f36-a418-872e9ec8756d.jpg",
+                        "16_4934ec30-78d8-4926-9be4-663ec1bce828.jpg",
+                        "16_072111b4-5d68-4eb9-b6fb-524875127dec.jpg",
+                        "16_33404f4e-6e31-4c44-85bc-c3cf3f372975.jpg"
                 ),
-                louisXV
+                louisXV,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -356,12 +389,13 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Milan",
                 BigDecimal.valueOf(950),
                 List.of(
-                        "https://i.etsystatic.com/42655398/r/il/66df6f/5711400826/il_1588xN.5711400826_rez8.jpg",
-                        "https://i.etsystatic.com/42655398/r/il/490fa6/5711396946/il_1588xN.5711396946_7i80.jpg",
-                        "https://i.etsystatic.com/42655398/r/il/924607/5759460829/il_1588xN.5759460829_bfmq.jpg",
-                        "https://i.etsystatic.com/42655398/r/il/fb3f5f/5759460679/il_1588xN.5759460679_qtrp.jpg"
+                        "17_80fee6da-5d17-46b5-b8e5-72de5f4edc01.jpg",
+                        "17_4c09a347-bf7e-4db0-b7b4-454310e3d59b.jpg",
+                        "17_0462f76b-d7b8-41db-bead-70d13a071219.jpg",
+                        "17_639733bf-1ae8-465b-a6c8-160b0ec48a6e.jpg"
                 ),
-                luminaires
+                luminaires,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -370,14 +404,15 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Versailles",
                 BigDecimal.valueOf(3700),
                 List.of(
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-main-6821b6be52ef7.jpg",
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-6821b6e120fcd.jpg",
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-6821b6e129726.jpg",
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-6821b6e12ec9a.jpg",
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-alb-6821b70b5407a.jpg",
-                        "https://www.proantic.com/galerie/rocaille/img/1545740-alb-6821b70b6cdca.jpg"
+                        "18_0063ddaf-e89d-4643-b3f3-acffa389dd82.jpg",
+                        "18_f5b7814a-e1ef-4bc2-a927-2672863ea8d6.jpg",
+                        "18_ad260ec8-a61a-487f-b1b7-54ea944170d6.jpg",
+                        "18_3a518bc9-dafc-4541-9b43-9d8bffd39d59.jpg",
+                        "18_2cbd46a2-6f96-4d96-a008-0f56ead6c390.jpg",
+                        "18_05185a5a-7c88-44c9-91fd-2eaa3bba4298.jpg"
                 ),
-                miroirs
+                miroirs,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -386,12 +421,13 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Tours",
                 BigDecimal.valueOf(120000),
                 List.of(
-                        "https://www.artcurial.com/item-images/FR/413/10271413_Vue.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/FR/413/10271413_Vue2.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/FR/413/10271413_Vue3.jpg?w=700&force_webp=true",
-                        "https://www.artcurial.com/item-images/FR/413/10271413_Vue4.jpg?w=700&force_webp=true"
+                        "19_5a4d97e0-49aa-474f-b906-6f7c9c45be35.webp",
+                        "19_8fdff3bf-27ce-4e56-aa18-6e08b528be60.webp",
+                        "19_56db6e7b-ff8f-4bca-bb0e-5d3127e86de4.webp",
+                        "19_74ff0df5-00c7-4905-9095-9c4714d9c6fc.webp"
                 ),
-                avantGuerre
+                avantGuerre,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -400,15 +436,16 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Manchester",
                 BigDecimal.valueOf(14500),
                 List.of(
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5de912.jpg?fit=fillmax&h=1200&ixlib=php-4.1.0&q=85&w=1200&s=bf4a80c35a18a6a8ac36a8f2455823fd",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5df4fe.jpg?fit=fillmax&h=800&ixlib=php-4.1.0&q=85&w=800&s=610768556ab7e2d79b382b699f47999c",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5def11.jpg?fit=fillmax&h=800&ixlib=php-4.1.0&q=85&w=800&s=3bace5a9f1df71e57b4cef36f061c0e3",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5e099d.jpg?fit=fillmax&h=1200&ixlib=php-4.1.0&q=85&w=1200&s=d9c94d9ef13494c3dd25b2a3ef60f4bf",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5e04f1.jpg?fit=fillmax&h=800&ixlib=php-4.1.0&q=85&w=800&s=74cc3b56a1b292fe7b4d33505b1d7eeb",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5e15f0.jpg?fit=fillmax&h=1200&ixlib=php-4.1.0&q=85&w=1200&s=3008ea0678119906601d0106e5ada435",
-                        "https://assets.carandclassic.com/uploads/cars/triumph/C1872420/1967-triumph-bonneville-650-680cecc5e1b59.jpg?fit=fillmax&h=800&ixlib=php-4.1.0&q=85&w=800&s=f2ed49bcd7d6706c8d0035b5e1364510"
+                        "20_e8645312-ec6b-4229-bd62-21e4fd75f19f.jpg",
+                        "20_12716082-f41a-474c-9187-318f989378a7.jpg",
+                        "20_31f50bc6-7549-4dce-ac7f-d42bc8d529a3.jpg",
+                        "20_c8db0b84-935e-4df7-a9d8-587addd31936.jpg",
+                        "20_fed3fd8c-efdb-4f5b-8dc8-9880517ad79f.jpg",
+                        "20_9093e73d-fc82-4820-9b59-5257acb00649.jpg",
+                        "20_121b9739-7cf1-450f-ad0f-58f791b038c8.jpg"
                 ),
-                vintage
+                vintage,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -417,15 +454,16 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "La Rochelle",
                 BigDecimal.valueOf(32000),
                 List.of(
-                        "https://static.b24.co/fotos/xlarge/602427-c0d0a1a72f64127f722c439f551552d7-x-6274919-84b9c8b6b3f0ab8014fdd7561e7ea193.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-be55c6aeae2979c4321e5e8b44466406-x-6274911-66f849d1d07b7398082a5b1f726a5d51.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-82ea6c7198104e20986c3c5a667e376f-x-6274913-dff901ac07c15cd57cbcf94de03e549b.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-e7222e4a08b173bae66a4ee755a9c96c-x-6274907-f3de116f4ab4f8c7327d3c3b89b00bbd.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-441be33c89436026cc08c10c863cc4fd-x-6274908-2711937507e7bf9d20ade08103bc16c3.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-8541e7d885a02959617bf10c921ca443-x-6274926-e238d0b88115c1f73f4ac0a3cfc79a49.webp",
-                        "https://static.b24.co/fotos/xlarge/602427-ed541380b61abd4c7e7ae00ecbc77bf0-x-6278211-12304f3f9410a5cb894937076c777df7.webp"
+                        "21_c4df6297-cf07-442d-90c2-f5906c2d2d70.webp",
+                        "21_d4e449b6-c294-4f33-a840-ee132551f0fb.webp",
+                        "21_6be8b9f8-0c9a-447a-9ebb-0ad93d78894c.webp",
+                        "21_b26363a1-04a1-4cbe-89cd-18ac3d5dba25.webp",
+                        "21_a6819a03-b443-4e14-b34c-d62b7c768276.webp",
+                        "21_b4bf3ef4-6c1d-45bc-9f88-27700fd1fa15.webp",
+                        "21_7338f1d3-24d2-4b83-ba43-b515cd276027.webp"
                 ),
-                voiliersClassiques
+                voiliersClassiques,
+                jonSnow
         ));
 
         lotRepository.save(new Lot(
@@ -434,11 +472,12 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Marseille",
                 BigDecimal.valueOf(2500),
                 List.of(
-                        "https://static.wixstatic.com/media/577107_4f75f11a53ad45b28762baa02378caaf~mv2.webp/v1/fill/w_611,h_625,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/577107_4f75f11a53ad45b28762baa02378caaf~mv2.webp",
-                        "https://static.wixstatic.com/media/577107_0c519ddaaccb4460a0fbe3bf06eeb77f~mv2.webp/v1/fill/w_611,h_625,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/577107_0c519ddaaccb4460a0fbe3bf06eeb77f~mv2.webp",
-                        "https://static.wixstatic.com/media/577107_6dbfbc0791f542099e3fa4ba4e63ea36~mv2.webp/v1/fill/w_611,h_625,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/577107_6dbfbc0791f542099e3fa4ba4e63ea36~mv2.webp"
+                        "22_2474700f-6111-49d3-84b8-a75ab0db5fba.webp",
+                        "22_fe0328fb-5edf-4772-b958-5e8c619784f1.webp",
+                        "22_1aeb703d-7b48-4644-835b-332bc06da108.webp"
                 ),
-                maillotsSignes
+                maillotsSignes,
+                nedStark
         ));
 
         lotRepository.save(new Lot(
@@ -447,13 +486,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Stockholm",
                 BigDecimal.valueOf(850),
                 List.of(
-                        "https://i.ebayimg.com/images/g/JOEAAeSwtXBnoitJ/s-l960.webp",
-                        "https://i.ebayimg.com/images/g/KTEAAeSwifVnoitJ/s-l960.webp",
-                        "https://i.ebayimg.com/images/g/rp8AAeSwLgpnrKv9/s-l960.webp",
-                        "https://i.ebayimg.com/images/g/kKAAAeSwKTpnoitK/s-l960.webp",
-                        "https://i.ebayimg.com/images/g/dDgAAeSwTNdnoitK/s-l960.webp"
+                        "23_b7292255-2b3a-4f42-9974-81f18831db52.webp",
+                        "23_078435c5-c570-47a4-a050-80c3c17f8b3f.webp",
+                        "23_74c013a4-dbe0-4f20-8e8c-35d2d857085b.webp",
+                        "23_d1b5b9a0-487d-4fed-a010-def74dfd5908.webp",
+                        "23_aff45a54-b05d-43ff-880c-d58d5e6d9ec4.webp"
                 ),
-                billetsHistoriques
+                billetsHistoriques,
+                nedStark
         ));
 
         lotRepository.save(new Lot(
@@ -462,13 +502,14 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Liège",
                 BigDecimal.valueOf(230),
                 List.of(
-                        "https://alarecherchedumeilleur.com/wp-content/uploads/2020/12/ancienne-raquette-tennis-vintage-04.jpg",
-                        "https://alarecherchedumeilleur.com/wp-content/uploads/2020/12/ancienne-raquette-tennis-vintage-02.jpg",
-                        "https://alarecherchedumeilleur.com/wp-content/uploads/2020/12/ancienne-raquette-tennis-vintage-03-700x700.jpg",
-                        "https://alarecherchedumeilleur.com/wp-content/uploads/2020/12/ancienne-raquette-tennis-vintage-06-700x667.jpg",
-                        "https://alarecherchedumeilleur.com/wp-content/uploads/2020/12/IMG_5142-scaled.jpeg"
+                        "24_b26a9833-e3d0-434a-9dce-7b0f56e1706b.jpg",
+                        "24_7e9feb46-3810-4a28-b9b9-5c4e9a3c49aa.jpg",
+                        "24_3a3bf1db-eb3a-414d-8307-6ebbe41d0692.jpg",
+                        "24_a13c74c4-5ceb-4d30-b5da-dffd04b4cda1.jpg",
+                        "24_d9ea5746-6fde-4279-9f03-97e200055e2e.jpg"
                 ),
-                raquettesBallons
+                raquettesBallons,
+                nedStark
         ));
 
         lotRepository.save(new Lot(
@@ -477,20 +518,28 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "Strasbourg",
                 BigDecimal.valueOf(3800),
                 List.of(
-                        "https://i.ebayimg.com/images/g/n7kAAOSw591m6aEn/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/gTAAAOSw69pm6aEn/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/lkwAAOSwZQBm6aEk/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/BxQAAOSwgbhm6aEo/s-l1600.webp",
-                        "https://i.ebayimg.com/images/g/ejMAAOSwWYNm6aEf/s-l1600.webp"
+                        "25_abbc3472-121d-4c0f-b0fe-59381fb5253d.webp",
+                        "25_a229e035-467b-4e22-a8ed-21e8a6bf266d.webp",
+                        "25_ed4eff26-80ef-4fb5-b6c0-e03996c0157d.webp",
+                        "25_d15d6a7f-0515-4612-8d75-3ddf4c34fd72.webp",
+                        "25_8b59bd0d-dc65-41ff-8bbe-a66bf767ebed.webp"
                 ),
-                combinaisons
+                combinaisons,
+                nedStark
         ));
 
         List<Lot> allLots = lotRepository.findAll();
-        generateChronologicalAuctions(allLots, auctionRepository, user);
+        allLots.forEach(lot -> lot.setPublishDate(LocalDateTime.now().minusDays(100)));
+        lotRepository.saveAllAndFlush(allLots);
+
+        List<User> users = List.of(jonSnow, nedStark, daenerysTargaryen);
+        generateChronologicalAuctions(allLots, auctionRepository, users);
+
+        users.forEach(u -> u.setBalance(BigDecimal.valueOf(1_000_000)));
+        userRepository.saveAll(users);
     }
 
-    public void generateChronologicalAuctions(List<Lot> lots, AuctionRepository auctionRepository, User user) {
+    public void generateChronologicalAuctions(List<Lot> lots, AuctionRepository auctionRepository, List<User> users) {
         Random random = new Random();
 
         for (Lot lot : lots) {
@@ -518,8 +567,11 @@ public class LoadTestDatabase implements CommandLineRunner {
                 BigDecimal increment = BigDecimal.valueOf(Math.floor((random.nextDouble() * 0.1 + 0.01) * basePrice.doubleValue()));
                 currentPrice = currentPrice.add(increment);
 
-                Auction auction = new Auction(currentPrice, auctionDate, lot, user);
-                auctionRepository.save(auction);
+                List<User> buyerUsers = new ArrayList<>(users.stream().filter(u -> !u.isSame(lot.getSellerUser())).toList());
+                Collections.shuffle(buyerUsers);
+
+                Auction auction = new Auction(currentPrice, auctionDate, lot, buyerUsers.get(0));
+                auctionRepository.saveAndFlush(auction);
             }
         }
     }

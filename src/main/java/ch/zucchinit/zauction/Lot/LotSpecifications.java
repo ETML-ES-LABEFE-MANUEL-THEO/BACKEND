@@ -1,32 +1,69 @@
 package ch.zucchinit.zauction.Lot;
 
+import ch.zucchinit.zauction.Auction.Auction;
 import ch.zucchinit.zauction.Category.CategoryService;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class LotSpecifications {
+    public static Specification<Lot> orderByDatesDesc() {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            query.orderBy(
+                    cb.desc(root.get("transferDate")),
+                    cb.desc(root.get("closeDate")),
+                    cb.desc(root.get("publishDate")),
+                    cb.desc(root.get("creationDate"))
+            );
 
-    static Specification<Lot> isFinished() {
-        return (root, query, cb) -> cb.isNull(root.get("awardDate"));
+            return cb.conjunction();
+        };
+    }
+
+    static Specification<Lot> isBuyer(Long userId) {
+        return (root, query, cb) -> {
+            query.distinct(true);
+
+            Join<Lot, Auction> auctionsJoin = root.join("auctions", JoinType.LEFT);
+            return cb.or(
+                    cb.equal(root.get("buyerUser").get("id"), userId),
+                    cb.equal(auctionsJoin.get("user").get("id"), userId)
+            );
+        };
+    }
+
+    static Specification<Lot> isSeller(Long userId) {
+        return (root, query, cb) -> cb.equal(root.get("sellerUser").get("id"), userId);
+    }
+
+    static Specification<Lot> isAvailable() {
+        LocalDate now = LocalDate.now();
+        return (root, query, cb) -> cb.and(
+                cb.and(root.get("publishDate").isNotNull(), cb.lessThanOrEqualTo(root.get("publishDate"), now)),
+                cb.or(root.get("closeDate").isNull(), cb.greaterThanOrEqualTo(root.get("closeDate"), now))
+        );
     }
 
     static Specification<Lot> hasCategoryId(CategoryService categoryService, Long categoryId) {
         return (root, query, cb) -> {
-            if (categoryId == null) return null;
-            else {
-                List<Long> ids = categoryService.getChildIds(categoryId, null);
-                return cb.or(
-                        cb.equal(root.get("category").get("id"), categoryId),
-                        root.get("category").get("id").in(ids)
-                );
-            }
+            List<Long> ids = categoryService.getChildIds(categoryId, null);
+            return cb.or(
+                    cb.equal(root.get("category").get("id"), categoryId),
+                    root.get("category").get("id").in(ids)
+            );
         };
     }
 
     static Specification<Lot> multiFieldSearch(String keyword) {
         return (root, query, cb) -> {
-            if (keyword == null || keyword.isBlank()) return null;
+            if (keyword.isBlank()) return null;
 
             String likePattern = "%" + keyword.toLowerCase() + "%";
             return cb.or(
@@ -35,6 +72,15 @@ public class LotSpecifications {
                     cb.like(cb.lower(root.get("location")), likePattern),
                     cb.like(cb.toString(root.get("id")), likePattern)
             );
+        };
+    }
+
+    static Specification<Lot> betweenMaxAuctionPrice(BigDecimal min, BigDecimal max) {
+        return (root, query, cb) -> {
+            if (min != null && max != null) return cb.between(root.get("lastPrice"), min, max);
+            else if (min != null) return cb.greaterThanOrEqualTo(root.get("lastPrice"), min);
+            else if (max != null) return cb.lessThanOrEqualTo(root.get("lastPrice"), max);
+            return null;
         };
     }
 }

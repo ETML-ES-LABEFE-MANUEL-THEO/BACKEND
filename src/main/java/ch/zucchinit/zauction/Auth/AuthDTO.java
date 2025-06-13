@@ -1,7 +1,6 @@
 package ch.zucchinit.zauction.Auth;
 
 import jakarta.validation.constraints.*;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 
@@ -12,9 +11,11 @@ public class AuthDTO {
 
     public record UserAccount(
         @Size(min = 1, max = 30, message = "Le prénom doit contenir entre 1 et 30 caractères")
+        @Pattern(regexp = "[A-zÀ-ÖØ-öø-ÿ ]+", message = "Seules les lettres sont admises")
         String firstName,
 
         @Size(min = 1, max = 30, message = "Le nom doit contenir entre 1 et 30 caractères")
+        @Pattern(regexp = "[A-zÀ-ÖØ-öø-ÿ ]+", message = "Seules les lettres sont admises")
         String lastName,
 
         String email,
@@ -26,6 +27,7 @@ public class AuthDTO {
         String address,
 
         @Size(min = 1, max = 100, message = "La ville doit contenir entre 1 et 100 caractères")
+        @Pattern(regexp = "[A-zÀ-ÖØ-öø-ÿ ]+", message = "Seules les lettres sont admises")
         String city,
 
         @Size(min = 1, max = 30, message = "Le code postal doit contenir entre 1 et 30 caractères")
@@ -39,10 +41,12 @@ public class AuthDTO {
     public record UserRegister(
         @NotNull(message = "Le prénom est obligatoire")
         @Size(min = 1, max = 30, message = "Le prénom doit contenir entre 1 et 30 caractères")
+        @Pattern(regexp = "[A-zÀ-ÖØ-öø-ÿ ]+", message = "Seules les lettres sont admises")
         String firstName,
 
         @NotNull(message = "Le nom est obligatoire")
         @Size(min = 1, max = 30, message = "Le nom doit contenir entre 1 et 30 caractères")
+        @Pattern(regexp = "[A-zÀ-ÖØ-öø-ÿ ]+", message = "Seules les lettres sont admises")
         String lastName,
 
         @NotNull(message = "L'email est obligatoire")
@@ -76,7 +80,6 @@ public class AuthDTO {
                 regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{12,30}$",
                 message = "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un symbole"
         )
-        @Value("#{'${test.myvalue}'.trim()}")
         String newPassword
     ){}
 }

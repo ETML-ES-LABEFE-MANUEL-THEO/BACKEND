@@ -7,9 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -18,18 +16,18 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-    private String firstName;
-    private String lastName;
-    private @Column(unique = true) String email;
-    private String password;
+    private @Column(nullable = false) String firstName;
+    private @Column(nullable = false) String lastName;
+    private @Column(unique = true, nullable = false) String email;
+    private @Column(nullable = false) String password;
     private String phone;
     private String address;
     private String city;
     private String zipCode;
     private BigDecimal balance = BigDecimal.valueOf(0);
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
-    private List<Auction> auctions;
+    @OneToMany(mappedBy = "user")
+    private List<Auction> auctions = new ArrayList<>();
 
     public User() {}
     public User(String firstName, String lastName, String email, String hashedPassword) {
@@ -39,12 +37,13 @@ public class User implements UserDetails {
         this.password = hashedPassword;
     }
 
+    public boolean isSame(User user) { return user != null && Objects.equals(id, user.id); }
     public boolean hasSufficientBalance(BigDecimal amount) {  return getAvailableBalance().compareTo(amount) >= 0; }
     public BigDecimal getAvailableBalance() { return this.balance.subtract(getReservedBalance()); }
     public BigDecimal getReservedBalance() {
         if (this.auctions == null) return BigDecimal.ZERO;
         return getAuctions().stream()
-                .filter(Auction::isLast)
+                .filter(a -> a.isLast() && a.getLot().getTransferDate() == null)
                 .map(Auction::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

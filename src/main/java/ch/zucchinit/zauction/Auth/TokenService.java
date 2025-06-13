@@ -1,6 +1,6 @@
 package ch.zucchinit.zauction.Auth;
 
-import ch.zucchinit.zauction.APIConfiguration;
+import ch.zucchinit.zauction.Configurations.APIConfiguration;
 import jakarta.servlet.http.Cookie;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -62,7 +62,7 @@ public class TokenService {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void purgeExpiredTokens() {
+    protected void purgeExpiredTokens() {
         tokenRepository.deleteByExpireDateBefore(LocalDateTime.now());
     }
 }

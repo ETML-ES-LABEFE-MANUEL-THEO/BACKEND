@@ -1,60 +1,107 @@
 package ch.zucchinit.zauction.Lot;
 
-import ch.zucchinit.zauction.Auction.AuctionDTO;
-import ch.zucchinit.zauction.Auction.AuctionService;
+import ch.zucchinit.zauction.Exceptions.GenericError;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lots")
 public class LotController {
     private final LotService lotService;
-    private final AuctionService auctionService;
 
-    public LotController(LotService lotService, AuctionService auctionService) {
-        this.lotService = lotService;
-        this.auctionService = auctionService;
-    }
+    public LotController(LotService lotService) { this.lotService = lotService; }
 
     @GetMapping()
-    public LotDTO.LotPaginatedThumbnail paginate(
+    public LotDTO.PaginatedLot<LotDTO.LotThumbnail> paginate(
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @RequestParam(required = false, defaultValue = "9") Integer take,
-            @RequestParam(required = false, name = "category") Long categoryId,
-            @RequestParam(required = false) String search)
+            @ModelAttribute LotDTO.LotFilter filters)
     {
-        return lotService.findByPageWithCategoryAndSearch(page, take, categoryId, search);
+        return lotService.findByPageWithCategoryAndSearch(page, take, filters);
+    }
+
+    @GetMapping("/buy")
+    public LotDTO.PaginatedLot<LotDTO.LotHistory> historyBuy(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "9") Integer take)
+    {
+        return lotService.findByPageForHistory(page, take, false);
+    }
+
+    @GetMapping("/sell")
+    public LotDTO.PaginatedLot<LotDTO.LotHistory> historySell(
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "9") Integer take)
+    {
+        return lotService.findByPageForHistory(page, take, true);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public LotDTO.LotDetails one(@PathVariable Long id) {
-        Lot lot = lotService.findById(id);
+        Lot lot = lotService.getRestrictedLot(id);
         return lotService.getLotDetails(lot);
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/{id}/auctions")
-    public List<AuctionDTO.AuctionPrice> auctionsPerPeriod(@PathVariable Long id, @RequestParam(required = false) String period) {
-        AuctionDTO.TimePeriod timePeriod;
+    @PostMapping
+    public LotDTO.LotDetails create(
+            @Valid @RequestPart(name = "lot") LotDTO.LotCreation lotCreation,
+            @RequestPart(name = "mediasMeta") List<Integer> metas,
+            @RequestPart(name = "medias") List<MultipartFile> files)
+    {
+            Map<Integer, MultipartFile> medias = new HashMap<>();
+            for (int i = 0; i < metas.size(); i++) medias.put(metas.get(i), files.get(i));
 
-        try {
-            timePeriod = AuctionDTO.TimePeriod.valueOf(period.toUpperCase());
-        } catch (Exception e) {
-            timePeriod = AuctionDTO.TimePeriod.WEEK;
-        }
-
-        Lot lot = lotService.findById(id);
-        return auctionService.findAuctionsByPeriod(lot, timePeriod);
+            try {
+                Lot lot = lotService.createLot(lotCreation, medias);
+                return lotService.getLotDetails(lot);
+            } catch (Exception ex) {
+                throw new GenericError(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la création du lot");
+            }
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("/{id}/auctions")
-    public AuctionDTO.AuctionResponse requestAuction(@PathVariable Long id, @Valid @RequestBody AuctionDTO.AuctionRequest auctionRequest) {
+    @PatchMapping("/{id}")
+    public LotDTO.LotDetails update(
+            @PathVariable Long id,
+            @Valid @RequestPart(name = "lot") LotDTO.LotModification lotModification,
+            @RequestPart(name = "mediasMeta", required = false) List<LotDTO.LotMediaAction> metas,
+            @RequestPart(name = "medias", required = false) List<MultipartFile> files)
+    {
+        try {
+            Lot lot = lotService.updateLot(id, lotModification, metas, files);
+            return lotService.getLotDetails(lot);
+        } catch (Exception e) {
+            throw new GenericError(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la modification du lot");
+        }
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/publish")
+    public void publishLot(@PathVariable Long id) {
         Lot lot = lotService.findById(id);
-        return auctionService.createAuction(lot, auctionRequest);
+        lotService.publishLot(lot);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/close")
+    public void closeLot(@PathVariable Long id) {
+        Lot lot = lotService.findById(id);
+        lotService.closeLot(lot);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/transfer")
+    public LotDTO.LotTransferResult acceptLot(@PathVariable Long id) {
+        Lot lot = lotService.findById(id);
+        return lotService.transferLot(lot);
     }
 }

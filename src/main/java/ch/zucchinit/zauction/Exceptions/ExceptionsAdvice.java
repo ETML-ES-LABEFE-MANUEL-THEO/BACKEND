@@ -1,6 +1,7 @@
 package ch.zucchinit.zauction.Exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,11 @@ public class ExceptionsAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     List<ExceptionsDTO.ValidationError> validationErrorHandler(ValidationError ex) {
         return ex.getValidationErrors();
+    }
+
+    @ExceptionHandler(GenericError.class)
+    ResponseEntity<ExceptionsDTO.GenericError> genericErrorHandler(GenericError ex) {
+        return new ResponseEntity<>(new ExceptionsDTO.GenericError(ex.getError()), ex.getHttpStatus());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

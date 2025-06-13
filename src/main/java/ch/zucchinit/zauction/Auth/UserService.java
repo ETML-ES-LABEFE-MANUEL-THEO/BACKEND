@@ -3,10 +3,13 @@ package ch.zucchinit.zauction.Auth;
 import ch.zucchinit.zauction.Exceptions.ExceptionsDTO;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import ch.zucchinit.zauction.Exceptions.ValidationError;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +28,19 @@ public class UserService {
     public User getUserFromContext() {
         Long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
         return userRepository.findById(id).orElseThrow(ResourceNotFound::new);
+    }
+
+    public boolean isSameUser(User user) {
+        if (user == null) return false;
+        return user.isSame(getUserFromContext());
+    }
+
+    public void restrictUser(User user) {
+        if (!isSameUser(user)) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+
+    public void restrictUsers(List<User> users) {
+        if (users.stream().noneMatch(this::isSameUser)) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
     public User findUserByEmailAndPassword(String email, String password) {
@@ -66,6 +82,11 @@ public class UserService {
 
         if (!passwordEncoder.matches(userResetPassword.oldPassword(), user.getPassword())) throw new ResourceNotFound();
         user.setPassword(passwordEncoder.encode(userResetPassword.newPassword()));
+        userRepository.save(user);
+    }
+
+    public void setBalanceForUser(User user, BigDecimal newBalance) {
+        user.setBalance(newBalance);
         userRepository.save(user);
     }
 }
