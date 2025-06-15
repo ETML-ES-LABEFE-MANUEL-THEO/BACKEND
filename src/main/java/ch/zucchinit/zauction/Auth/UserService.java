@@ -26,8 +26,12 @@ public class UserService {
     }
 
     public User getUserFromContext() {
-        Long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        return userRepository.findById(id).orElseThrow(ResourceNotFound::new);
+        try {
+            Long id = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+            return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        } catch (Exception ex) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public boolean isSameUser(User user) {
@@ -63,7 +67,7 @@ public class UserService {
         );
     }
 
-    public AuthDTO.UserAccount updateUser(AuthDTO.UserAccount userAccount) {
+    public User updateUser(AuthDTO.UserAccount userAccount) {
         User user = getUserFromContext();
 
         updateIfChanged(user::getFirstName, user::setFirstName, userAccount.firstName());
@@ -73,8 +77,7 @@ public class UserService {
         updateIfChanged(user::getCity, user::setCity, userAccount.city());
         updateIfChanged(user::getZipCode, user::setZipCode, userAccount.zipCode());
 
-        userRepository.save(user);
-        return userAccount;
+        return userRepository.save(user);
     }
 
     public void resetPassword(AuthDTO.UserResetPassword userResetPassword) {

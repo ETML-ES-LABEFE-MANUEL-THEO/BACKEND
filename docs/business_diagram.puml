@@ -179,6 +179,7 @@ package ch.zucchinit.zauction {
 
         class AuctionService {
             -auctionRepository: AuctionRepository
+            -lotRepository: LotRepository
             -userService: UserService
             +createAuction(Lot lot, AuctionDTO.AuctionRequest): AuctionDTO.AuctionResponse
             +findAuctionsByPeriod(Lot lot, AuctionDTO.TimePeriod period): AuctionDTO.AuctionPrice[]
@@ -186,6 +187,7 @@ package ch.zucchinit.zauction {
         }
 
         AuctionService --> AuctionRepository
+        AuctionService --> LotRepository
         AuctionService --> AuctionDTO
         AuctionService --> UserService
     }

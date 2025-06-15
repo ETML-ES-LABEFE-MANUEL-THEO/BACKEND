@@ -1,14 +1,11 @@
 package ch.zucchinit.zauction.Lot;
 
-import ch.zucchinit.zauction.Exceptions.GenericError;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,17 +54,12 @@ public class LotController {
     public LotDTO.LotDetails create(
             @Valid @RequestPart(name = "lot") LotDTO.LotCreation lotCreation,
             @RequestPart(name = "mediasMeta") List<Integer> metas,
-            @RequestPart(name = "medias") List<MultipartFile> files)
-    {
-            Map<Integer, MultipartFile> medias = new HashMap<>();
-            for (int i = 0; i < metas.size(); i++) medias.put(metas.get(i), files.get(i));
+            @RequestPart(name = "medias") List<MultipartFile> files) throws IOException {
+        Map<Integer, MultipartFile> medias = new HashMap<>();
+        for (int i = 0; i < metas.size(); i++) medias.put(metas.get(i), files.get(i));
 
-            try {
-                Lot lot = lotService.createLot(lotCreation, medias);
-                return lotService.getLotDetails(lot);
-            } catch (Exception ex) {
-                throw new GenericError(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la création du lot");
-            }
+        Lot lot = lotService.createLot(lotCreation, medias);
+        return lotService.getLotDetails(lot);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -76,16 +68,10 @@ public class LotController {
             @PathVariable Long id,
             @Valid @RequestPart(name = "lot") LotDTO.LotModification lotModification,
             @RequestPart(name = "mediasMeta", required = false) List<LotDTO.LotMediaAction> metas,
-            @RequestPart(name = "medias", required = false) List<MultipartFile> files)
-    {
-        Lot lot = lotService.findById(id);
-        if (lot.getPublishDate().isBefore(LocalDateTime.now())) throw new ResponseStatusException(HttpStatus.CONFLICT);
+            @RequestPart(name = "medias", required = false) List<MultipartFile> files) throws IOException {
 
-        try {
-            return lotService.getLotDetails(lotService.updateLot(lot, lotModification, metas, files));
-        } catch (Exception e) {
-            throw new GenericError(HttpStatus.INTERNAL_SERVER_ERROR, "Erreur lors de la modification du lot");
-        }
+        Lot lot = lotService.findById(id);
+        return lotService.getLotDetails(lotService.updateLot(lot, lotModification, metas, files));
     }
 
     @PreAuthorize("isAuthenticated()")

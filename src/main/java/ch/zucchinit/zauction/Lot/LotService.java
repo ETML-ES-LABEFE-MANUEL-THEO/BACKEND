@@ -55,7 +55,7 @@ public class LotService {
             List<User> usersToRestrict = Stream.of(lot.getSellerUser(), lot.getBuyerUser().orElse(null)).filter(Objects::nonNull).toList();
             userService.restrictUsers(usersToRestrict);
         }
-        else if (lot.getPublishDate() == null) userService.restrictUser(lot.getSellerUser());
+        else if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) userService.restrictUser(lot.getSellerUser());
 
         return lot;
     }
@@ -80,7 +80,7 @@ public class LotService {
         if (filters != null) spec = spec.and(betweenMaxAuctionPrice(filters.minPrice(), filters.maxPrice()));
 
         Pageable pageable = PageRequest.of(safePage, safeTake);
-        Page<Lot> lots = lotRepository.findAll(spec, pageable);
+        Page<Lot> lots = lotRepository.findAll(spec.and(orderByPublishDate()), pageable);
         List<LotDTO.LotThumbnail> thumbnails = lots.getContent().stream().map(LotDTO.LotThumbnail::new).toList();
 
         return new LotDTO.PaginatedLot<>(thumbnails, safePage, safeTake, lots.getTotalElements(), extraData.isEmpty() ? null : extraData);

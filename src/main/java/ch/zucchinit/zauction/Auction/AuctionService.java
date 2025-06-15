@@ -6,6 +6,8 @@ import ch.zucchinit.zauction.Exceptions.ExceptionsDTO;
 import ch.zucchinit.zauction.Exceptions.GenericError;
 import ch.zucchinit.zauction.Exceptions.ValidationError;
 import ch.zucchinit.zauction.Lot.Lot;
+import ch.zucchinit.zauction.Lot.LotRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,13 +20,16 @@ import java.util.stream.Collectors;
 @Service
 public class AuctionService {
     private final AuctionRepository auctionRepository;
+    private final LotRepository lotRepository;
     private final UserService userService;
 
-    public AuctionService(AuctionRepository auctionRepository, UserService userService) {
+    public AuctionService(AuctionRepository auctionRepository, LotRepository lotRepository, UserService userService) {
         this.auctionRepository = auctionRepository;
+        this.lotRepository = lotRepository;
         this.userService = userService;
     }
 
+    @Transactional
     public AuctionDTO.AuctionResponse createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
         if (userService.isSameUser(lot.getSellerUser())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         if (lot.getPublishDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
@@ -37,16 +42,16 @@ public class AuctionService {
         }
 
         User user = userService.getUserFromContext();
-        BigDecimal priceDiff = lot.getAuctions().stream()
-                .filter(a -> a.getUser().isSame(user))
-                .max(Comparator.comparing(Auction::getDate))
-                .map(a -> auctionRequest.price().subtract(a.getPrice()))
-                .orElse(auctionRequest.price());
+        Auction lastAuction = lot.getLastAuction().orElse(null);
+        BigDecimal priceDiff = lastAuction != null && userService.isSameUser(lastAuction.getUser()) ? auctionRequest.price().subtract(lastAuction.getPrice()) : auctionRequest.price();
 
         if (!user.hasSufficientBalance(priceDiff)) {
             ExceptionsDTO.ValidationError error = new ExceptionsDTO.ValidationError("balance", "Le solde de l'utilisateur est insuffisant");
             throw new ValidationError(List.of(error));
         }
+
+        lot.setLastPrice(auctionRequest.price());
+        lotRepository.save(lot);
 
         Auction auction = this.auctionRepository.save(new Auction(auctionRequest.price(), LocalDateTime.now(), lot, user));
         return new AuctionDTO.AuctionResponse(auction.getDate(), auction.getPrice(), user.getAvailableBalance().subtract(priceDiff));

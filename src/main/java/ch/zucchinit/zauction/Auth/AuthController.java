@@ -68,7 +68,8 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/me/account")
     public AuthDTO.UserAccount updateAccount(@Valid @RequestBody AuthDTO.UserAccount userAccount) {
-        return userService.updateUser(userAccount);
+        User user = userService.updateUser(userAccount);
+        return new AuthDTO.UserAccount(user);
     }
 
     @PreAuthorize("isAuthenticated()")

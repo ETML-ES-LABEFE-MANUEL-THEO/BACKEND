@@ -57,27 +57,32 @@ public class LotMediaService {
         }
 
         adds.sort(Comparator.comparingInt(LotDTO.LotMediaAction::to));
+        int addOffset = 0;
         for (LotDTO.LotMediaAction meta : adds) {
-            int to = meta.to();
+            int to = meta.to() + addOffset;
             MultipartFile file = medias.get(mediaAddIndex++);
             String mediaName = getMediaName(lot, file);
             currentMedias.add(to, mediaName);
             toUpload.put(mediaName, file.getBytes());
+            addOffset++;
         }
 
         for (LotDTO.LotMediaAction meta : moves) {
             int from = meta.from();
             int to = meta.to();
+            if (from == to) continue;
             String moved = currentMedias.remove(from);
+            if (to > from) to--;
             currentMedias.add(to, moved);
         }
 
-        s3Connector.uploadFiles(toUpload);
-        s3Connector.deleteFiles(toDelete);
+        if (!toUpload.isEmpty()) s3Connector.uploadFiles(toUpload);
+        if (!toDelete.isEmpty()) s3Connector.deleteFiles(toDelete);
 
         lot.setMedias(currentMedias);
         return lotRepository.save(lot);
     }
+
 
     private String getMediaName(Lot lot, MultipartFile file) {
         String extension = s3Connector.getFileExtension(file.getOriginalFilename());

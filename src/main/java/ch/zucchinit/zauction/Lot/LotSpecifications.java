@@ -4,12 +4,10 @@ import ch.zucchinit.zauction.Auction.Auction;
 import ch.zucchinit.zauction.Category.CategoryService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class LotSpecifications {
@@ -17,11 +15,20 @@ public class LotSpecifications {
         return (root, query, cb) -> {
             query.distinct(true);
             query.orderBy(
-                    cb.desc(root.get("creationDate")),
                     cb.desc(root.get("transferDate")),
                     cb.desc(root.get("closeDate")),
-                    cb.desc(root.get("publishDate"))
+                    cb.desc(root.get("publishDate")),
+                    cb.desc(root.get("creationDate"))
             );
+
+            return cb.conjunction();
+        };
+    }
+
+    public static Specification<Lot> orderByPublishDate() {
+        return (root, query, cb) -> {
+            query.distinct(true);
+            query.orderBy(cb.desc(root.get("publishDate")));
 
             return cb.conjunction();
         };
@@ -44,10 +51,14 @@ public class LotSpecifications {
     }
 
     static Specification<Lot> isAvailable() {
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         return (root, query, cb) -> cb.and(
-                cb.and(root.get("publishDate").isNotNull(), cb.lessThanOrEqualTo(root.get("publishDate"), now)),
-                cb.or(root.get("closeDate").isNull(), cb.greaterThanOrEqualTo(root.get("closeDate"), now))
+                cb.isNotNull(root.get("publishDate")),
+                cb.lessThanOrEqualTo(root.get("publishDate"), now),
+                cb.or(
+                        cb.isNull(root.get("closeDate")),
+                        cb.greaterThan(root.get("closeDate"), now)
+                )
         );
     }
 

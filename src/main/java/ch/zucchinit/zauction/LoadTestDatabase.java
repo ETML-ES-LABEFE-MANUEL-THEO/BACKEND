@@ -37,6 +37,7 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "jon.snow@zauction.ch",
                 "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
         ));
+        jonSnow.setBalance(BigDecimal.valueOf(10_000_000));
 
         User nedStark = userRepository.save(new User(
                 "Ned",
@@ -44,6 +45,7 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "ned.stark@zauction.ch",
                 "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
         ));
+        nedStark.setBalance(BigDecimal.valueOf(10_000_000));
 
         User daenerysTargaryen = userRepository.save(new User(
                 "Daenerys",
@@ -51,6 +53,7 @@ public class LoadTestDatabase implements CommandLineRunner {
                 "daenerys.targaryen@zauction.ch",
                 "$2a$10$XoMOGkh2.i.CP.pEsf5Pgu36cNPD7havdQmBaioeFj15i4n/P4N8y"
         ));
+        daenerysTargaryen.setBalance(BigDecimal.valueOf(10_000_000));
 
         Category artEtAntiquites = categoryRepository.save(new Category("Art & Antiquités", null));
         Category peintures = categoryRepository.save(new Category("Peintures", artEtAntiquites));
@@ -534,8 +537,6 @@ public class LoadTestDatabase implements CommandLineRunner {
 
         List<User> users = List.of(jonSnow, nedStark, daenerysTargaryen);
         generateChronologicalAuctions(allLots, auctionRepository, users);
-
-        users.forEach(u -> u.setBalance(BigDecimal.valueOf(1_000_000)));
         userRepository.saveAll(users);
     }
 
@@ -544,7 +545,6 @@ public class LoadTestDatabase implements CommandLineRunner {
 
         for (Lot lot : lots) {
             int auctionCount = 10 + random.nextInt(241);
-
             BigDecimal basePrice = lot.getInitialPrice();
             BigDecimal currentPrice = basePrice;
             LocalDateTime now = LocalDateTime.now();
@@ -569,10 +569,14 @@ public class LoadTestDatabase implements CommandLineRunner {
 
                 List<User> buyerUsers = new ArrayList<>(users.stream().filter(u -> !u.isSame(lot.getSellerUser())).toList());
                 Collections.shuffle(buyerUsers);
+                User user = buyerUsers.get(0);
 
-                Auction auction = new Auction(currentPrice, auctionDate, lot, buyerUsers.get(0));
+                Auction auction = new Auction(currentPrice, auctionDate, lot, user);
                 auctionRepository.saveAndFlush(auction);
             }
+
+            lot.setLastPrice(currentPrice);
+            lotRepository.saveAndFlush(lot);
         }
     }
 }
