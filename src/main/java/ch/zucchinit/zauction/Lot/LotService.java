@@ -51,7 +51,7 @@ public class LotService {
 
     public Lot getRestrictedLot(Long id) {
         Lot lot = findById(id);
-        if (lot.getTransferDate() != null || lot.getCloseDate() != null) {
+        if (lot.getTransferDate() != null || (lot.getCloseDate() != null && lot.getCloseDate().isBefore(LocalDateTime.now()))) {
             List<User> usersToRestrict = Stream.of(lot.getSellerUser(), lot.getBuyerUser().orElse(null)).filter(Objects::nonNull).toList();
             userService.restrictUsers(usersToRestrict);
         }
@@ -110,9 +110,11 @@ public class LotService {
         Category category = categoryService.findById(lotCreation.categoryId());
         User user = userService.getUserFromContext();
 
-        Lot lot = lotRepository.save(new Lot(lotCreation.name(), lotCreation.description(), lotCreation.location(),
-                lotCreation.initialPrice(), new ArrayList<>(), category, user));
-
+        Lot newLot = new Lot(lotCreation.name(), lotCreation.description(), lotCreation.location(), lotCreation.initialPrice(), new ArrayList<>(), category, user);
+        if (lotCreation.publishDate() != null) newLot.setPublishDate(lotCreation.publishDate());
+        if (lotCreation.closeDate() != null) newLot.setCloseDate(lotCreation.closeDate());
+        
+        Lot lot = lotRepository.save(newLot);
         return lotMediaService.insertLotMedias(lot, medias);
     }
 
@@ -141,7 +143,7 @@ public class LotService {
 
     public void publishLot(Lot lot) {
         userService.restrictUser(lot.getSellerUser());
-        if (lot.getPublishDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà publié");
+        if (lot.getPublishDate() != null && lot.getPublishDate().isBefore(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà publié");
 
         lot.setPublishDate(LocalDateTime.now());
         lotRepository.save(lot);
@@ -150,8 +152,8 @@ public class LotService {
     public void closeLot(Lot lot) {
         userService.restrictUser(lot.getSellerUser());
 
-        if (lot.getPublishDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
-        if (lot.getCloseDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà clôturé");
+        if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
+        if (lot.getCloseDate() != null && lot.getCloseDate().isBefore(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà clôturé");
 
         Optional<Auction> lastAuction = lot.getLastAuction();
         lot.setCloseDate(LocalDateTime.now());
@@ -165,8 +167,8 @@ public class LotService {
         User buyerUser = lot.getBuyerUser().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         userService.restrictUser(buyerUser);
 
-        if (lot.getPublishDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
-        if (lot.getCloseDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas clôturé");
+        if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
+        if (lot.getCloseDate() == null || lot.getCloseDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas clôturé");
         if (lot.getTransferDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà transféré");
 
         BigDecimal newBuyerBalance = buyerUser.getBalance().subtract(lot.getLastPrice());
