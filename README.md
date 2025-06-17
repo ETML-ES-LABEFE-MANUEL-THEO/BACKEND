@@ -1,4 +1,4 @@
-# Z-Auction
+# Z-Auction Backend
 
 This project is a Spring Boot backend application for our auction platform named Z-Auction. It serves as the core server-side component, handling business logic, data management with JPA, and providing RESTful APIs to support the auction functionalities.
 
@@ -74,10 +74,13 @@ The application can be configured via environment variables or by editing the `a
 # Application Name
 spring.application.name=zauction
 
+# API context path
+server.servlet.context-path=/api/v1
+
 # API SECURITY
 security.cors-origin=*
 security.api-header=X-API-KEY
-security.api-secret=mySecretApi
+security.api-secret=mysecretapi
 security.cookie-name=Authorization
 security.cookie-validity=43200
 
@@ -88,6 +91,16 @@ spring.datasource.username=zauction
 spring.datasource.password=secret
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 spring.jpa.show-sql=true
+
+# S3 CONFIG
+s3.bucket=projlabefe.theomanuel
+s3.region=us-east-1
+s3.access-key=YOUR_ACCESS_KEY
+s3.secret-key=YOUR_SECRET_KEY
+
+# FILE UPLOAD
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=100MB
 ```
 
 **Remember:**
