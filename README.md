@@ -1,4 +1,4 @@
-# Z-Auction
+# Z-Auction Backend
 
 This project is a Spring Boot backend application for our auction platform named Z-Auction. It serves as the core server-side component, handling business logic, data management with JPA, and providing RESTful APIs to support the auction functionalities.
 
