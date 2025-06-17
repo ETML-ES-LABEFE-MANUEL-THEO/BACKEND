@@ -11,7 +11,14 @@ package ch.zucchinit.zauction {
             deleteByExpireDateBefore(LocalDateTime date): void
         }
 
-        class AuthDTO
+        class AuthDTO {
+            class UserProfile
+            class UserAccount
+            class UserRegister
+            class UserLogin
+            class UserResetPassword
+        }
+
         class AuthController {
             -userService: UserService
             -tokenService: TokenService
@@ -104,7 +111,7 @@ package ch.zucchinit.zauction {
             +update(Long id, LotDTO.LotModification lotModification, Lot.LotMediaAction[] metas, Multipart[] files): LotDTO.LotDetails
             +publishLot(Long id): void
             +closeLot(Long id): void
-            +transferLot(Long id): void
+            +transferLot(Long id): LotDTO.LotTransferResult
         }
 
         class LotAuctionController {
@@ -143,12 +150,25 @@ package ch.zucchinit.zauction {
 
         class LotSpecifications {
             {static}orderByDatesDesc(): Specification<Lot>
+            {static}orderById(): Specification<Lot>
             {static}isBuyer(Long userId): Specification<Lot>
             {static}isSeller(Long userId): Specification<Lot>
             {static}isAvailable(): Specification<Lot>
             {static}hasCategoryId(CategoryService categoryService, Long categoryId): Specification<Lot>
             {static}multiFieldSearch(String keyword): Specification<Lot>
             {static}betweenMaxAuctionPrice(Decimal min, Decimal max): Specification<Lot>
+        }
+
+        class LotExceptionsAdvice {
+            +handleLotExceptionsConflicts(Exception ex): ExceptionsDTO.GenericError
+        }
+
+        class LotExceptions {
+            class NotPublishedException
+            class AlreadyPublishedException
+            class NotClosedException
+            class AlreadyClosedException
+            class AlreadyTransferredException
         }
 
         LotController --> LotService
@@ -162,6 +182,7 @@ package ch.zucchinit.zauction {
         LotService --> CategoryService
         LotService --> AuctionService
         LotService --> UserService
+        LotService --> LotExceptions
         LotMediaService --> LotRepository
     }
 
@@ -192,6 +213,7 @@ package ch.zucchinit.zauction {
         AuctionService --> UserService
     }
 
+    Auction.AuctionService --> Lot.LotExceptions
     Lot.LotAuctionController --> Auction.AuctionDTO
     Lot.LotService --> Category.CategoryService
     Lot.LotService --> Auction.AuctionService
