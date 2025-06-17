@@ -7,7 +7,6 @@ import ch.zucchinit.zauction.Auth.User;
 import ch.zucchinit.zauction.Auth.UserService;
 import ch.zucchinit.zauction.Category.Category;
 import ch.zucchinit.zauction.Category.CategoryService;
-import ch.zucchinit.zauction.Exceptions.GenericError;
 import ch.zucchinit.zauction.Exceptions.ResourceNotFound;
 import ch.zucchinit.zauction.Utils.FieldUpdater;
 import jakarta.transaction.Transactional;
@@ -51,11 +50,11 @@ public class LotService {
 
     public Lot getRestrictedLot(Long id) {
         Lot lot = findById(id);
-        if (lot.getTransferDate() != null || (lot.getCloseDate() != null && lot.getCloseDate().isBefore(LocalDateTime.now()))) {
+        if (lot.isTransferred() || lot.isClosed()) {
             List<User> usersToRestrict = Stream.of(lot.getSellerUser(), lot.getBuyerUser().orElse(null)).filter(Objects::nonNull).toList();
             userService.restrictUsers(usersToRestrict);
         }
-        else if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) userService.restrictUser(lot.getSellerUser());
+        else if (!lot.isPublished()) userService.restrictUser(lot.getSellerUser());
 
         return lot;
     }
@@ -113,7 +112,7 @@ public class LotService {
         Lot newLot = new Lot(lotCreation.name(), lotCreation.description(), lotCreation.location(), lotCreation.initialPrice(), new ArrayList<>(), category, user);
         if (lotCreation.publishDate() != null) newLot.setPublishDate(lotCreation.publishDate());
         if (lotCreation.closeDate() != null) newLot.setCloseDate(lotCreation.closeDate());
-        
+
         Lot lot = lotRepository.save(newLot);
         return lotMediaService.insertLotMedias(lot, medias);
     }
@@ -124,6 +123,7 @@ public class LotService {
                          List<MultipartFile> medias) throws IOException
     {
         userService.restrictUser(lot.getSellerUser());
+        if (lot.isPublished()) throw new LotExceptions.AlreadyPublishedException();
 
         if (lotModification.categoryId() != null && !Objects.equals(lot.getCategory().getId(), lotModification.categoryId())) {
             Category category = categoryService.findById(lotModification.categoryId());
@@ -143,7 +143,7 @@ public class LotService {
 
     public void publishLot(Lot lot) {
         userService.restrictUser(lot.getSellerUser());
-        if (lot.getPublishDate() != null && lot.getPublishDate().isBefore(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà publié");
+        if (lot.isPublished()) throw new LotExceptions.AlreadyPublishedException();
 
         lot.setPublishDate(LocalDateTime.now());
         lotRepository.save(lot);
@@ -152,8 +152,8 @@ public class LotService {
     public void closeLot(Lot lot) {
         userService.restrictUser(lot.getSellerUser());
 
-        if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
-        if (lot.getCloseDate() != null && lot.getCloseDate().isBefore(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà clôturé");
+        if (!lot.isPublished()) throw new LotExceptions.NotPublishedException();
+        if (lot.isClosed()) throw new LotExceptions.AlreadyClosedException();
 
         Optional<Auction> lastAuction = lot.getLastAuction();
         lot.setCloseDate(LocalDateTime.now());
@@ -167,9 +167,9 @@ public class LotService {
         User buyerUser = lot.getBuyerUser().orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
         userService.restrictUser(buyerUser);
 
-        if (lot.getPublishDate() == null || lot.getPublishDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
-        if (lot.getCloseDate() == null || lot.getCloseDate().isAfter(LocalDateTime.now())) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas clôturé");
-        if (lot.getTransferDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est déjà transféré");
+        if (!lot.isPublished()) throw new LotExceptions.NotPublishedException();
+        if (!lot.isClosed()) throw new LotExceptions.NotClosedException();
+        if (lot.isTransferred()) throw new LotExceptions.AlreadyTransferredException();
 
         BigDecimal newBuyerBalance = buyerUser.getBalance().subtract(lot.getLastPrice());
         userService.setBalanceForUser(buyerUser, newBuyerBalance);

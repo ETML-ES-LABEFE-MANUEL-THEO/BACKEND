@@ -58,9 +58,13 @@ public class Lot {
         this.auctions = new ArrayList<>();
     }
 
+    public boolean isPublished() { return this.publishDate != null && this.publishDate.isBefore(LocalDateTime.now()); }
+    public boolean isClosed() { return this.closeDate != null && this.closeDate.isBefore(LocalDateTime.now()); }
+    public boolean isTransferred() { return this.transferDate != null; }
+
     public Optional<User> getBuyerUser() {
         if (buyerUser != null) return Optional.of(buyerUser);
-        if (closeDate != null && LocalDateTime.now().isAfter(closeDate)) return getLastAuction().map(Auction::getUser);
+        if (isClosed()) return getLastAuction().map(Auction::getUser);
         return Optional.empty();
     }
 

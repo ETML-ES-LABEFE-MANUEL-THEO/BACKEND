@@ -555,8 +555,8 @@ public class LoadTestDatabase implements CommandLineRunner {
                 int hour = 8 + random.nextInt(12);
                 int minute = random.nextInt(60);
                 LocalDateTime date = now.minusDays(daysAgo)
-                        .withHour(hour)
-                        .withMinute(minute)
+                        .minusHours(hour)
+                        .minusMinutes(minute)
                         .withSecond(0)
                         .withNano(0);
                 auctionDates.add(date);

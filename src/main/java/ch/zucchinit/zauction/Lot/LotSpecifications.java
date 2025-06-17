@@ -28,7 +28,7 @@ public class LotSpecifications {
     public static Specification<Lot> orderByPublishDate() {
         return (root, query, cb) -> {
             query.distinct(true);
-            query.orderBy(cb.desc(root.get("publishDate")));
+            query.orderBy(cb.desc(root.get("id")));
 
             return cb.conjunction();
         };

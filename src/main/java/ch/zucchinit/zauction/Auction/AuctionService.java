@@ -8,6 +8,7 @@ import ch.zucchinit.zauction.Exceptions.ValidationError;
 import ch.zucchinit.zauction.Lot.Lot;
 import ch.zucchinit.zauction.Lot.LotRepository;
 import jakarta.transaction.Transactional;
+import ch.zucchinit.zauction.Lot.LotExceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,8 +33,8 @@ public class AuctionService {
     @Transactional
     public AuctionDTO.AuctionResponse createAuction(Lot lot, AuctionDTO.AuctionRequest auctionRequest) {
         if (userService.isSameUser(lot.getSellerUser())) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
-        if (lot.getPublishDate() == null) throw new GenericError(HttpStatus.CONFLICT, "Le lot n'est pas publié");
-        if (lot.getCloseDate() != null) throw new GenericError(HttpStatus.CONFLICT, "Le lot est clôturé");
+        if (!lot.isPublished()) throw new LotExceptions.NotPublishedException();
+        if (lot.isClosed()) throw new LotExceptions.AlreadyClosedException();
 
         BigDecimal lastPrice = lot.getLastPrice();
         if (lastPrice.compareTo(auctionRequest.price()) >= 0) {
