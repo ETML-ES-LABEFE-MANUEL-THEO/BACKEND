@@ -20,14 +20,14 @@ entity Token {
     * expired: Boolean
     * user_id: Integer [FK]
 }
-Token |o-- User : authenticated by
+Token ||--o{ User : authenticated by
 
 entity Category {
     * ** id : Integer [PK] **
     * name : String
     parent_id : Integer [FK]
 }
-Category |o-- Category : belongs to
+Category ||--o| Category : belongs to
 
 entity Lot {
     * ** id : Integer [PK] **
@@ -44,9 +44,9 @@ entity Lot {
     * seller_user_id: Integer[FK]
     * buyer_user_id: Integer[FK]
 }
-Lot ||-- Category : classified by
-Lot ||-- User : selled by
-Lot ||-- User : buyed by
+Lot ||--o{ Category : classified by
+Lot ||--o{ User : selled by
+Lot ||--o{ User : buyed by
 
 entity Auction {
     * ** id : Integer [PK] **
@@ -55,6 +55,6 @@ entity Auction {
     * lot_id : Integer [FK]
     * user_id : Integer [FK]
 }
-Lot }o-- Auction : priced by
-Auction ||-- User : bid by
+Lot }o--|| Auction : priced by
+Auction ||--o{ User : bid by
 @enduml
